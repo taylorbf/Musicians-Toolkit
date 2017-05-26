@@ -2,15 +2,31 @@
   display:inline-block;
 }
 
+.mt-position {
+  background-color:#eeeeee;
+}
+
 .mt-dial .bg,
-.mt-slider .bg
+.mt-slider .bg,
+.mt-toggle .bar.inactive
 {
   fill: #eeeeee;
 }
 
 
 .mt-dial .screw,
-.mt-dial .handle,
+.mt-dial .handle-fill,
+.mt-slider .bar-fill,
+.mt-slider .knob,
+.mt-toggle .knob,
+.mt-toggle .bar.active,
+.mt-position .knob
 {
-  fill: #dd1188;
+  fill: #00aaaa;
+}
+
+
+.mt-dial .handle-border
+{
+  stroke: #00aaaa;
 }

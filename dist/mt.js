@@ -233,10 +233,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="position"></span>
 	*
 	* @example
-	* var position = mt.position('#target')
+	* var position = new mt.Position('#target')
 	*
 	* @example
-	* var position = mt.position('#target',{
+	* var position = new mt.Position('#target',{
 	*   'size': [200,200],
 	*   'mode': 'absolute',  // "absolute" or "relative"
 	*   'x': 0.5,  // initial x value
@@ -327,8 +327,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    colorInterface: {
 	      value: function colorInterface() {
-	        this.element.style.backgroundColor = this.colors.fill;
-	        this.knob.setAttribute("fill", this.colors.accent);
+	        //    this.element.style.backgroundColor = this.colors.fill;
+	        //    this.knob.setAttribute('fill', this.colors.accent);
+	        this.element.setAttribute("class", "mt-position");
+	        this.knob.setAttribute("class", "knob");
 	      }
 	    },
 	    render: {
@@ -1977,10 +1979,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="slider" step=0.2></span>
 	*
 	* @example
-	* var slider = mt.slider('#target')
+	* var slider = new mt.Slider('#target')
 	*
 	* @example
-	* var slider = mt.slider('#target',{
+	* var slider = new mt.Slider('#target',{
 	*     'size': [120,20],
 	*     'orientation': 'vertical',  // 'vertical' or 'horizontal'
 	*     'mode': 'relative',  // 'relative' or 'absolute'
@@ -2141,9 +2143,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    colorInterface: {
 	      value: function colorInterface() {
-	        this.bar.setAttribute("fill", this.colors.fill);
-	        this.fillbar.setAttribute("fill", this.colors.accent);
-	        this.knob.setAttribute("fill", this.colors.accent);
+	        //  this.bar.setAttribute('fill', this.colors.fill);
+	        //  this.fillbar.setAttribute('fill', this.colors.accent);
+	        //  this.knob.setAttribute('fill', this.colors.accent);
+	
+	        this.element.setAttribute("class", "mt-slider");
+	        this.bar.setAttribute("class", "bg");
+	        this.fillbar.setAttribute("class", "bar-fill");
+	        this.knob.setAttribute("class", "knob");
 	      }
 	    },
 	    render: {
@@ -2304,10 +2311,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="toggle"></span>
 	*
 	* @example
-	* var toggle = mt.toggle('#target')
+	* var toggle = new mt.Toggle('#target')
 	*
 	* @example
-	* var toggle = mt.toggle('#target',{
+	* var toggle = new mt.Toggle('#target',{
 	*     'size': [40,20],
 	*     'value': 0
 	* })
@@ -2383,16 +2390,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function colorInterface() {
 	        this.knob.setAttribute("fill", this.colors.accent);
 	        this.render();
+	
+	        this.element.setAttribute("class", "mt-toggle");
+	        this.knob.setAttribute("class", "knob");
+	        this.bar.setAttribute("class", "bar inactive");
 	      }
 	    },
 	    render: {
 	      value: function render() {
 	        if (!this.state) {
 	          this.knob.setAttribute("cx", this.width / 2 - this.knobSize);
-	          this.bar.setAttribute("fill", this.colors.fill);
+	          //  this.bar.setAttribute('fill', this.colors.fill);
+	          this.bar.setAttribute("class", "bar inactive");
 	        } else {
 	          this.knob.setAttribute("cx", this.width / 2 + this.knobSize);
-	          this.bar.setAttribute("fill", this.colors.accent);
+	          //  this.bar.setAttribute('fill', this.colors.accent);
+	          this.bar.setAttribute("class", "bar active");
 	        }
 	      }
 	    },
@@ -2465,10 +2478,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="button"></span>
 	*
 	* @example
-	* var button = mt.button('#button')
+	* var button = new mt.Button('#button')
 	*
 	* @example
-	* var button = mt.button('#button',{
+	* var button = new mt.Button('#button',{
 	*   mode: 'toggle',
 	*   state: true,
 	*   size: [100,100],
@@ -2873,10 +2886,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="textButton"></span>
 	*
 	* @example
-	* var textbutton = mt.textbutton('#target')
+	* var textbutton = new mt.TextButton('#target')
 	*
 	* @example
-	* var dial = mt.dial('#target',{
+	* var dial = new mt.TextButton('#target',{
 	*     'size': [150,50],
 	*     'value': 0,
 	*     'text': 'Play',
@@ -3047,10 +3060,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <div mt="RadioButton"></div>
 	*
 	* @example
-	* var radiobutton = mt.radiobutton('#target')
+	* var radiobutton = new mt.RadioButton('#target')
 	*
 	* @example
-	* var radiobutton = mt.radiobutton('#target',{
+	* var radiobutton = new mt.RadioButton('#target',{
 	*   'size': [120,25],
 	*   'numberOfButtons': 4,
 	*   'active': -1
@@ -3208,10 +3221,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="number"></span>
 	*
 	* @example
-	* var number = mt.number('#target')
+	* var number = new mt.Number('#target')
 	*
 	* @example
-	* var number = mt.number('#target',{
+	* var number = new mt.Number('#target',{
 	*   'size': [60,30],
 	*   'value': 0,
 	*   'min': 0,
@@ -3516,10 +3529,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="dial"></span>
 	*
 	* @example
-	* var dial = mt.dial('#target')
+	* var dial = new mt.Dial('#target')
 	*
 	* @example
-	* var dial = mt.dial('#target',{
+	* var dial = new mt.Dial('#target',{
 	*   'size': [75,75],
 	*   'interaction': 'radial', // "radial", "vertical", or "horizontal"
 	*   'mode': 'relative', // "absolute" or "relative"
@@ -3703,13 +3716,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    colorInterface: {
 	      value: function colorInterface() {
-	        this.background.setAttribute("fill", this.colors.fill);
-	        this.screw.setAttribute("fill", this.colors.accent);
-	        this.handle.setAttribute("stroke", this.colors.accent);
-	        this.handle2.setAttribute("stroke", this.colors.accent);
-	        this.handleFill.setAttribute("fill", this.colors.accent);
-	        this.handle2Fill.setAttribute("fill", this.colors.accent);
-	        this.handleLine.setAttribute("stroke", this.colors.accent);
+	        //  this.background.setAttribute('fill', this.colors.fill);
+	        //  this.screw.setAttribute('fill', this.colors.accent);
+	        //  this.handle.setAttribute('stroke', this.colors.accent);
+	        //  this.handle2.setAttribute('stroke', this.colors.accent);
+	        //  this.handleFill.setAttribute('fill', this.colors.accent);
+	        //  this.handle2Fill.setAttribute('fill', this.colors.accent);
+	        //  this.handleLine.setAttribute('stroke', this.colors.accent);
+	
+	        this.element.setAttribute("class", "mt-dial");
+	        this.background.setAttribute("class", "bg");
+	        this.screw.setAttribute("class", "screw");
+	        this.handle.setAttribute("class", "handle-border");
+	        this.handle2.setAttribute("class", "handle-border");
+	        this.handleFill.setAttribute("class", "handle-fill");
+	        this.handle2Fill.setAttribute("class", "handle-fill");
+	        this.handleLine.setAttribute("class", "handle-border");
 	      }
 	    },
 	    render: {
@@ -4007,10 +4029,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <div mt="piano"></div>
 	*
 	* @example
-	* var piano = mt.piano('#target')
+	* var piano = new mt.Piano('#target')
 	*
 	* @example
-	* var piano = mt.piano('#target',{
+	* var piano = new mt.Piano('#target',{
 	*     'size': [500,150],
 	*     'mode': 'button',  // 'button', 'toggle', or 'impulse'
 	*     'lowNote': 24,
@@ -4442,10 +4464,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <div mt="sequencer" style="width:400px;height:200px;"></div>
 	*
 	* @example
-	* var sequencer = mt.sequencer('#target')
+	* var sequencer = new mt.Sequencer('#target')
 	*
 	* @example
-	* var sequencer = mt.sequencer('#target',{
+	* var sequencer = new mt.Sequencer('#target',{
 	*  'size': [400,200],
 	*  'mode': 'toggle',
 	*  'rows': 5,
@@ -5461,10 +5483,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="pan2D"></span>
 	*
 	* @example
-	* var pan2d = mt.pan2d('#target')
+	* var pan2d = new mt.Pan2d('#target')
 	*
 	* @example
-	* var pan2d = mt.pan2d('#target',{
+	* var pan2d = new mt.Pan2d('#target',{
 	*     'size': [200,200],
 	*     'range': 0.5,  // panning radius of each speaker
 	*     'mode': 'absolute',   // 'absolute' or 'relative'
@@ -5745,12 +5767,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt='tilt'></span>
 	*
 	* @example
-	* var tilt = mt.tilt('#target')
-	*
-	* @example
-	* var dial = mt.dial('#target',{
-	*   'size': [80,80]
-	* })
+	* var tilt = new mt.Tilt('#target')
 	*
 	* @output
 	* change
@@ -6050,10 +6067,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="multislider"></span>
 	*
 	* @example
-	* var multislider = mt.multislider('#target')
+	* var multislider = new mt.Multislider('#target')
 	*
 	* @example
-	* var multislider = mt.multislider('#target',{
+	* var multislider = new mt.Multislider('#target',{
 	*  'size': [200,100],
 	*  'numberOfSliders': 5,
 	*  'min': 0,
@@ -6678,15 +6695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="pan"></span>
 	*
 	* @example
-	* var pan = mt.pan('#target')
-	*
-	* @example
-	* var dial = mt.dial('#target',{
-	*     'size': [120,20],
-	*     'orientation': 'horizontal',
-	*     'mode': 'relative',
-	*     'value': 0,
-	* })
+	* var pan = new mt.Pan('#target')
 	*
 	* @output
 	* change
@@ -7010,10 +7019,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="envelope"></span>
 	*
 	* @example
-	* var envelope = mt.envelope('#target')
+	* var envelope = new mt.Envelope('#target')
 	*
 	* @example
-	* var envelope = mt.envelope('#target',{
+	* var envelope = new mt.Envelope('#target',{
 	*     'size': [300,150],
 	*     'scale': 1,
 	*     'points': [
@@ -7447,10 +7456,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="spectrogram"></span>
 	*
 	* @example
-	* var spectrogram = mt.spectrogram('#target')
+	* var spectrogram = new mt.Spectrogram('#target')
 	*
 	* @example
-	* var spectrogram = mt.spectrogram('#target',{
+	* var spectrogram = new mt.Spectrogram('#target',{
 	*   'size': [300,150]
 	* })
 	*
@@ -7609,10 +7618,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="meter"></span>
 	*
 	* @example
-	* var meter = mt.meter('#target')
+	* var meter = new mt.Meter('#target')
 	*
 	* @example
-	* var meter = mt.meter('#target',{
+	* var meter = new mt.Meter('#target',{
 	*   'size': [75,75]
 	* })
 	*
@@ -7826,10 +7835,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @demo <span mt="oscilloscope"></span>
 	*
 	* @example
-	* var oscilloscope = mt.oscilloscope('#target')
+	* var oscilloscope = new mt.Oscilloscope('#target')
 	*
 	* @example
-	* var oscilloscope = mt.oscilloscope('#target',{
+	* var oscilloscope = new mt.Oscilloscope('#target',{
 	*   'size': [300,150]
 	* })
 	*
