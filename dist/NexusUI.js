@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["es6Boilerplate"] = factory();
+		exports["NexusUI"] = factory();
 	else
-		root["es6Boilerplate"] = factory();
+		root["NexusUI"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -56,8 +56,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	
-	var MusiciansToolkit = __webpack_require__(1);
-	window.mt = new MusiciansToolkit();
+	var NexusUI = __webpack_require__(1);
+	var Nexus = new NexusUI();
+	
+	if (window) {
+	  window.Nexus = Nexus;
+	}
+	
+	module.exports = Nexus;
+	
+	/*
+	if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+	  module.exports = Nexus;
+	} else {
+	  window.Nexus = Nexus;
+	  console.log("browser-y");
+	} */
 
 /***/ },
 /* 1 */
@@ -65,11 +79,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	
+	var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
+	
 	var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
-	
-	var _applyConstructor = function (Constructor, args) { var instance = Object.create(Constructor.prototype); var result = Constructor.apply(instance, args); return result != null && (typeof result == "object" || typeof result == "function") ? result : instance; };
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 	
@@ -77,111 +89,81 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var math = _interopRequire(__webpack_require__(5));
 	
-	//import dom from './util/dom';
-	
 	var Rack = _interopRequire(__webpack_require__(38));
 	
-	var Time = _interopRequire(__webpack_require__(40));
+	var Tune = _interopRequire(__webpack_require__(40));
 	
-	var Tune = _interopRequire(__webpack_require__(45));
-	
-	//import RangeModel from './models/range';
-	
-	var Transform = _interopRequire(__webpack_require__(39));
+	var Transform = _interopRequireWildcard(__webpack_require__(39));
 	
 	var Counter = __webpack_require__(28);
-	var Radio = __webpack_require__(47);
+	var Radio = __webpack_require__(42);
 	var Drunk = __webpack_require__(27);
 	var Sequence = __webpack_require__(26);
-	/*let StepRange = require('./models/range'); */
-	var Step = __webpack_require__(11);
 	var Matrix = __webpack_require__(25);
-	var Toggle = __webpack_require__(13);
+	
+	var WAAClock = _interopRequire(__webpack_require__(43));
+	
+	var Interval = _interopRequire(__webpack_require__(46));
 	
 	/**
-	Musician's Toolkit => created as mt
+	NexusUI => created as Nexus
 	*/
 	
-	var MusiciansToolkit = (function () {
-	    function MusiciansToolkit(context) {
-	        _classCallCheck(this, MusiciansToolkit);
+	var NexusUI = function NexusUI(context) {
+	  _classCallCheck(this, NexusUI);
 	
-	        for (var key in Interfaces) {
-	            this[key] = Interfaces[key];
-	        }
-	        for (key in math) {
-	            this[key] = math[key];
-	        }
+	  for (var key in Interfaces) {
+	    this[key] = Interfaces[key];
+	  }
 	
-	        var DefaultContext = window.AudioContext || window.webkitAudioContext;
-	        this.context = context || new DefaultContext();
+	  for (var _key in math) {
+	    this[_key] = math[_key];
+	  }
 	
-	        this.time = new Time(this.context);
-	        this.tune = new Tune();
+	  var Core = {
+	    Rack: Rack
+	  };
 	
-	        this.colors = {
-	            accent: "#2bb",
-	            fill: "#eee",
-	            light: "#fff",
-	            dark: "#333",
-	            mediumLight: "#ccc",
-	            mediumDark: "#666"
-	        };
+	  var Models = {
+	    Counter: Counter,
+	    Radio: Radio,
+	    Drunk: Drunk,
+	    Sequence: Sequence,
+	    Matrix: Matrix
+	  };
 	
-	        this.transform = Transform;
-	    }
+	  for (var _key2 in Models) {
+	    this[_key2] = Models[_key2];
+	  }
 	
-	    _createClass(MusiciansToolkit, {
-	        rack: {
-	            value: function rack(parent, title, open) {
-	                return new Rack(parent, title, open);
-	            }
-	        },
-	        counter: {
-	            value: function counter(min, max, mode, value) {
-	                return new Counter(min, max, mode, value);
-	            }
-	        },
-	        radio: {
-	            value: function radio(length) {
-	                for (var _len = arguments.length, onVals = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	                    onVals[_key - 1] = arguments[_key];
-	                }
+	  for (var _key3 in Core) {
+	    this[_key3] = Core[_key3];
+	  }
 	
-	                return _applyConstructor(Radio, [length].concat(onVals));
-	            }
-	        },
-	        drunk: {
-	            value: function drunk(min, max, value, increment, loop) {
-	                return new Drunk(min, max, value, increment, loop);
-	            }
-	        },
-	        sequence: {
-	            value: (function (_sequence) {
-	                var _sequenceWrapper = function sequence(_x, _x2, _x3, _x4) {
-	                    return _sequence.apply(this, arguments);
-	                };
+	  var DefaultContext = window.AudioContext || window.webkitAudioContext;
+	  this.context = context || new DefaultContext();
 	
-	                _sequenceWrapper.toString = function () {
-	                    return _sequence.toString();
-	                };
+	  this.tune = new Tune();
+	  this.note = this.tune.note.bind(this.tune);
 	
-	                return _sequenceWrapper;
-	            })(function (sequence, mode, position, cacheSize) {
-	                return new Sequence(sequence, mode, position, cacheSize);
-	            })
-	        },
-	        matrix: {
-	            value: function matrix(rows, columns) {
-	                return new Matrix(rows, columns);
-	            }
-	        }
-	    });
+	  this.clock = new WAAClock(this.context);
+	  this.clock.start();
+	  this.Interval = Interval;
 	
-	    return MusiciansToolkit;
-	})();
+	  this.colors = {
+	    accent: "#2bb",
+	    fill: "#eee",
+	    light: "#fff",
+	    dark: "#333",
+	    mediumLight: "#ccc",
+	    mediumDark: "#666"
+	  };
 	
-	module.exports = MusiciansToolkit;
+	  this.transform = Transform;
+	  this.add = Transform.add;
+	};
+	
+	module.exports = NexusUI;
 
 /***/ },
 /* 2 */
@@ -241,13 +223,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Two-dimensional touch slider.
 	*
-	* @demo <span mt="position"></span>
+	* @demo <span nexus-ui="position"></span>
 	*
 	* @example
-	* var position = new mt.Position('#target')
+	* var position = new Nexus.Position('#target')
 	*
 	* @example
-	* var position = new mt.Position('#target',{
+	* var position = new Nexus.Position('#target',{
 	*   'size': [200,200],
 	*   'mode': 'absolute',  // "absolute" or "relative"
 	*   'x': 0.5,  // initial x value
@@ -316,7 +298,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        this.knob = svg.create("circle");
 	        this.element.appendChild(this.knob);
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -619,9 +600,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} max   Upper limit
 	 * @return {number}       The input value constrained within the lower and upper limits
 	 * @example
-	 * mt.clip(11,0,10)   // returns 10
-	 * mt.clip(-1,0,10)   // returns 0
-	 * mt.clip(5,0,10)    // returns 5
+	 * Nexus.clip(11,0,10)   // returns 10
+	 * Nexus.clip(-1,0,10)   // returns 0
+	 * Nexus.clip(5,0,10)    // returns 5
 	 */
 	
 	exports.clip = function (value, min, max) {
@@ -641,8 +622,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} outMax Output range maximum
 	 * @return {number}        The input value scaled to its new range
 	 * @example
-	 * mt.scale(0.5,0,1,0,10)   // returns 5
-	 * mt.scale(0.9,0,1,1,0)    // returns 0.1
+	 * Nexus.scale(0.5,0,1,0,10)   // returns 5
+	 * Nexus.scale(0.9,0,1,1,0)    // returns 0.1
 	 */
 	exports.scale = function (inNum, inMin, inMax, outMin, outMax) {
 	  if (inMin === inMax) {
@@ -689,7 +670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} midi MIDI note value
 	 * @return {number}      Frequence value
 	 * @example
-	 * mt.mtof(60)  // returns the frequency number of Middle C
+	 * Nexus.mtof(60)  // returns the frequency number of Middle C
 	 */
 	exports.mtof = function (midi) {
 	  return Math.pow(2, (midi - 69) / 12) * 440;
@@ -702,8 +683,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} max Upper value
 	 * @return {number}     Interpolated value
 	 * @example
-	 * mt.interp(0.5,2,4)   // returns 3
-	 * mt.interp(0.1,0,10)     // returns 1
+	 * Nexus.interp(0.5,2,4)   // returns 3
+	 * Nexus.interp(0.1,0,10)     // returns 1
 	 */
 	exports.interp = function (loc, min, max) {
 	  return loc * (max - min) + min;
@@ -713,8 +694,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Return a random choice from a list of arguments
 	 * @return {various} One random argument
 	 * @example
-	 * mt.pick(1,2,3,4)   // returns 1, 2, 3, or 4
-	 * mt.pick(function1,function2)   // returns either function1 or function2
+	 * Nexus.pick(1,2,3,4)   // returns 1, 2, 3, or 4
+	 * Nexus.pick(function1,function2)   // returns either function1 or function2
 	 */
 	exports.pick = function () {
 	  return arguments[~ ~(Math.random() * arguments.length)];
@@ -725,10 +706,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} num Relative octave number (e.g. -1 for one octave down, 1 for one octave up)
 	 * @return {number}     Octave multiplier
 	 * @example
-	 * mt.octave(-1)  // returns 0.5
-	 * mt.octave(0)   // returns 1
-	 * mt.octave(1)   // returns 2
-	 * mt.octave(2)   // returns 4
+	 * Nexus.octave(-1)  // returns 0.5
+	 * Nexus.octave(0)   // returns 1
+	 * Nexus.octave(1)   // returns 2
+	 * Nexus.octave(2)   // returns 4
 	 */
 	exports.octave = function (num) {
 	  return Math.pow(2, num);
@@ -740,8 +721,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} bound2 Maximum random value
 	 * @return {number}        Random integer between lower and upper boundary
 	 * @example
-	 * mt.ri(10)    // returns random int from 0 to 10
-	 * mt.ri(20,2000) // returns random int from 20 to 2000
+	 * Nexus.ri(10)    // returns random int from 0 to 10
+	 * Nexus.ri(20,2000) // returns random int from 20 to 2000
 	 */
 	exports.ri = function (bound1, bound2) {
 	  if (!bound2) {
@@ -759,8 +740,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} bound2 Maximum random value
 	 * @return {number}        Random float between lower and upper boundary
 	 * @example
-	 * mt.rf(1)    // returns random float from 0 to 1
-	 * mt.rf(1,2) // returns random float from 1 to 2
+	 * Nexus.rf(1)    // returns random float from 0 to 1
+	 * Nexus.rf(1,2) // returns random float from 1 to 2
 	 */
 	exports.rf = function (bound1, bound2) {
 	  if (!bound2) {
@@ -785,7 +766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {Array} data Array of numbers to average
 	 * @return {number}      Average of the input data
 	 * @example
-	 * mt.average([0,2,4,6,8,10])   // returns 5
+	 * Nexus.average([0,2,4,6,8,10])   // returns 5
 	 */
 	exports.average = function (data) {
 	  var total = 0;
@@ -803,7 +784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} y2 y of second poiny
 	 * @return {number}    Distance
 	 * @example
-	 * mt.distance(0,0,3,4)   // returns 5
+	 * Nexus.distance(0,0,3,4)   // returns 5
 	 */
 	exports.distance = function (x1, y1, x2, y2) {
 	  var a = x1 - x2;
@@ -820,7 +801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param  {number} [odds=0.5] Likelihood of returning 1
 	 * @return {number}            1 or 0
 	 * @example
-	 * mt.coin(0.1)   // returns 1 (10% likely) or 0 (90% likely)
+	 * Nexus.coin(0.1)   // returns 1 (10% of the time) or 0 (90% of the time)
 	 */
 	exports.coin = function () {
 	  var odds = arguments[0] === undefined ? 0.5 : arguments[0];
@@ -861,11 +842,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, Interface);
 	
 	    _get(Object.getPrototypeOf(Interface.prototype), "constructor", this).call(this);
+	    this.type = this.constructor.name;
 	    this.settings = this.parseSettings(args, options, defaults);
 	    this.mouse = {};
 	    this.wait = false;
 	    this.colors = {};
-	    var defaultColors = mt.colors;
+	    var defaultColors = Nexus.colors; // jshint ignore:line
 	    this.colors.accent = defaultColors.accent;
 	    this.colors.fill = defaultColors.fill;
 	    this.colors.light = defaultColors.light;
@@ -888,8 +870,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          target: document.body,
 	          colors: {}, // should inherit from a colors module,
 	          snapWithParent: true,
-	          event: console.log.bind(console),
-	          //'event': function() {},
+	          event: function event() {},
 	          component: false
 	        };
 	
@@ -916,24 +897,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	
-	        // handle common settings
-	        // ... target, colors, event, sizing...
+	        /*  handle common settings  */
 	
 	        // target
+	        this.parent = dom.parseElement(settings.target);
 	
-	        if (typeof settings.target === "string") {
-	          this.parent = document.getElementById(settings.target.replace("#", ""));
-	        } else if (settings.target instanceof HTMLElement) {
-	          this.parent = settings.target;
-	        } else if (settings.target instanceof SVGElement) {
-	          this.parent = settings.target;
-	        }
-	
+	        // nexus-ui attribute
 	        if (this.parent && this.parent instanceof HTMLElement && !settings.component) {
-	          if (this.parent.className) {
-	            this.parent.className += " mt-ui";
-	          } else {
-	            this.parent.className = "mt-ui";
+	          if (!this.parent.hasAttribute("nexus-ui")) {
+	            this.parent.setAttribute("nexus-ui", "");
 	          }
 	        }
 	
@@ -944,20 +916,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.parent.style.width = this.width;
 	          this.parent.style.height = this.height;
 	        } else if (settings.snapWithParent) {
-	          this.width = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("width").replace("px", ""));
-	          this.height = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("height").replace("px", ""));
-	          //  if (!this.width || !this.parent.style.width) {
+	          this.width = parseFloat(this.parent.style.width);
+	          this.height = parseFloat(this.parent.style.height);
+	
+	          if (!this.width) {
+	            this.width = parseFloat(this.parent.width);
+	          }
+	          if (!this.height) {
+	            this.height = parseFloat(this.parent.height);
+	          }
+	
+	          if (this.parent.style.width) {
+	            if (this.parent.style.width.indexOf("%") > 0) {
+	              this.width = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("width").replace("px", ""));
+	            }
+	          }
+	          if (this.parent.width) {
+	            if (this.parent.width.indexOf("%") > 0) {
+	              this.width = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("width").replace("px", ""));
+	            }
+	          }
+	
+	          if (this.parent.style.height) {
+	            if (this.parent.style.height.indexOf("%") > 0) {
+	              this.height = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("height").replace("px", ""));
+	            }
+	          }
+	          if (this.parent.height) {
+	            if (this.parent.height.indexOf("%") > 0) {
+	              this.height = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue("height").replace("px", ""));
+	            }
+	          }
+	
+	          /*  if (this.parent.style.height.indexOf("%")>0 || this.parent.height.indexOf("%")>0) {
+	              this.height = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue('height').replace('px',''));
+	            } */
+	
+	          //    this.width = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue('width').replace('px',''));
+	          //    this.height = parseFloat(window.getComputedStyle(this.parent, null).getPropertyValue('height').replace('px',''));
 	          if (!this.width) {
 	            this.width = settings.defaultSize[0];
 	            this.parent.style.width = this.width + "px";
 	          }
-	          //  if (!this.height || !this.parent.style.height) {
 	          if (!this.height) {
 	            this.height = settings.defaultSize[1];
 	            this.parent.style.height = this.height + "px";
 	          }
-	          //  this.width = this.width && this.parent.style.width ? this.width : settings.defaultSize[0];
-	          //  this.height = this.height && this.parent.style.width  ? this.height : settings.defaultSize[1];
 	        } else {
 	          settings.size = settings.defaultSize;
 	          this.width = settings.size[0];
@@ -965,7 +969,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	
 	        // event
-	
 	        if (settings.event) {
 	          this.event = this.on("change", settings.event);
 	        } else {
@@ -979,14 +982,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function init() {
 	        this.buildFrame();
 	        this.buildInterface();
+	        this.sizeInterface();
 	        this.attachListeners();
-	        //this.sizeInterface(); should probably add this here instead of in each interface
 	        this.colorInterface();
-	        //or
-	        //this.update.build()
-	        //this.update.size()
-	        //this.update.colors()
-	        //or this.render.state()
 	        this.finalTouches();
 	      }
 	    },
@@ -1115,12 +1113,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    preTouchMove: {
 	      value: function preTouchMove(e) {
 	        if (this.clicked) {
-	          /*    if (!this.wait) {
-	                this.mouse = dom.locateTouch(e,this.offset);
-	                this.move();
-	                this.wait = true;
-	                setTimeout(() => { this.wait = false; },25);
-	              } */
 	          this.mouse = dom.locateTouch(e, this.offset);
 	          this.touchMove();
 	          e.preventDefault();
@@ -1130,7 +1122,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    preTouchRelease: {
 	      value: function preTouchRelease(e) {
-	        //  if (e.targetTouches.length<=1) {
 	        this.mouse = dom.locateTouch(e, this.offset);
 	        this.clicked = false;
 	        this.touchRelease();
@@ -1231,10 +1222,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.parseElement = function (parent) {
 	  if (typeof parent === "string") {
-	    parent = document.getElementById(parent);
+	    parent = document.getElementById(parent.replace("#", ""));
 	  }
 	
-	  if (parent instanceof HTMLElement) {
+	  if (parent instanceof HTMLElement || parent instanceof SVGElement) {
 	    return parent;
 	  } else {
 	    return "No valid parent argument";
@@ -1985,13 +1976,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Horizontal or vertical slider with settable interaction modes.
 	*
-	* @demo <span mt="slider" step=0.2></span>
+	* @demo <span nexus-ui="slider" step=0.2></span>
 	*
 	* @example
-	* var slider = new mt.Slider('#target')
+	* var slider = new Nexus.Slider('#target')
 	*
 	* @example
-	* var slider = new mt.Slider('#target',{
+	* var slider = new Nexus.Slider('#target',{
 	*     'size': [120,20],
 	*     'orientation': 'vertical',  // 'vertical' or 'horizontal'
 	*     'mode': 'relative',  // 'relative' or 'absolute'
@@ -2063,8 +2054,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.element.appendChild(this.bar);
 	        this.element.appendChild(this.fillbar);
 	        this.element.appendChild(this.knob);
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -2312,13 +2301,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Binary switch
 	*
-	* @demo <span mt="toggle"></span>
+	* @demo <span nexus-ui="toggle"></span>
 	*
 	* @example
-	* var toggle = new mt.Toggle('#target')
+	* var toggle = new Nexus.Toggle('#target')
 	*
 	* @example
-	* var toggle = new mt.Toggle('#target',{
+	* var toggle = new Nexus.Toggle('#target',{
 	*     'size': [40,20],
 	*     'value': 0
 	* })
@@ -2365,8 +2354,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.knob = svg.create("circle");
 	        this.element.appendChild(this.bar);
 	        this.element.appendChild(this.knob);
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -2473,19 +2460,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Circular button with optional aftertouch.
 	*
-	* @demo <span mt="button"></span>
+	* @demo <span nexus-ui="button"></span>
 	*
 	* @example
-	* var button = new mt.Button('#button')
+	* var button = new Nexus.Button('#target')
 	*
 	* @example
-	* var button = new mt.Button('#button',{
-	*   mode: 'toggle',
-	*   state: true,
-	*   size: [100,100],
-	*   event: function(v) {
-	*     alert(v);
-	*   }
+	* var button = new Nexus.Button('#target',{
+	*   'mode': 'toggle',
+	*   'state': true,
+	*   'size': [100,100]
 	* })
 	*
 	* @output
@@ -2547,8 +2531,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.gradient.stops[0].setAttribute("offset", "30%");
 	
 	        this.gradient.stops[1].setAttribute("offset", "100%");
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -2881,13 +2863,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Text button
 	*
-	* @demo <span mt="textButton"></span>
+	* @demo <span nexus-ui="textButton"></span>
 	*
 	* @example
-	* var textbutton = new mt.TextButton('#target')
+	* var textbutton = new Nexus.TextButton('#target')
 	*
 	* @example
-	* var dial = new mt.TextButton('#target',{
+	* var dial = new Nexus.TextButton('#target',{
 	*     'size': [150,50],
 	*     'value': 0,
 	*     'text': 'Play',
@@ -2935,14 +2917,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildFrame() {
 	
 	        this.element = document.createElement("div");
-	        this.element.innerHTML = this._text;
 	        this.parent.appendChild(this.element);
+	
+	        this.textElement = document.createElement("div");
+	        this.textElement.innerHTML = this._text;
+	        this.element.appendChild(this.textElement);
 	      }
 	    },
 	    buildInterface: {
-	      value: function buildInterface() {
-	        this.sizeInterface();
-	      }
+	      value: function buildInterface() {}
 	    },
 	    colorInterface: {
 	      value: function colorInterface() {
@@ -2961,30 +2944,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        var styles = "width: " + this.width + "px;";
 	        styles += "height: " + this.height + "px;";
-	        styles += "background-color: #e7e7e7;";
-	        styles += "color: #333;";
 	        styles += "padding: " + (this.height - textsize) / 2 + "px 0px;";
 	        styles += "box-sizing: border-box;";
 	        styles += "text-align: center;";
-	        styles += "font-family: arial;";
+	        styles += "font-family: inherit;";
 	        styles += "font-weight: 700;";
+	        styles += "opacity: 1;";
 	        styles += "font-size:" + textsize + "px;";
-	        this.element.style.cssText = styles;
+	        this.textElement.style.cssText = styles;
+	        this.render();
 	      }
 	    },
 	    render: {
 	      value: function render() {
 	        if (!this.state) {
 	          this.element.style.backgroundColor = this.colors.fill;
-	          //if (this.alternateText) {
-	          this.element.innerHTML = this._text;
-	          //  }
+	          this.textElement.style.color = this.colors.dark;
+	          this.textElement.innerHTML = this._text;
 	        } else {
 	          this.element.style.backgroundColor = this.colors.accent;
+	          this.textElement.style.color = this.colors.fill;
 	          if (this.alternateText) {
-	            this.element.innerHTML = this._alternateText;
+	            this.textElement.innerHTML = this._alternateText;
 	          } else {
-	            this.element.innerHTML = this._text;
+	            this.textElement.innerHTML = this._text;
 	          }
 	        }
 	      }
@@ -3055,13 +3038,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description An array of buttons. By default, selecting one button will deselect all other buttons, but this can be customized using the API below.
 	*
-	* @demo <div mt="RadioButton"></div>
+	* @demo <div nexus-ui="RadioButton"></div>
 	*
 	* @example
-	* var radiobutton = new mt.RadioButton('#target')
+	* var radiobutton = new Nexus.RadioButton('#target')
 	*
 	* @example
-	* var radiobutton = new mt.RadioButton('#target',{
+	* var radiobutton = new Nexus.RadioButton('#target',{
 	*   'size': [120,25],
 	*   'numberOfButtons': 4,
 	*   'active': -1
@@ -3094,7 +3077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _get(Object.getPrototypeOf(RadioButton.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
 	    this.buttons = [];
-	    this.numberOfButtons = this.settings.numberOfButtons;
+	    this._numberOfButtons = this.settings.numberOfButtons;
 	    this.active = -1;
 	
 	    this.init();
@@ -3113,7 +3096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    buildInterface: {
 	      value: function buildInterface() {
 	
-	        for (var i = 0; i < this.numberOfButtons; i++) {
+	        for (var i = 0; i < this._numberOfButtons; i++) {
 	          var container = document.createElement("span");
 	
 	          var button = new Button(container, {
@@ -3123,24 +3106,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.buttons.push(button);
 	          this.element.appendChild(container);
 	        }
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
 	      value: function sizeInterface() {
 	
-	        var buttonWidth = this.width / this.numberOfButtons;
+	        var buttonWidth = this.width / this._numberOfButtons;
 	        var buttonHeight = this.height;
 	
-	        for (var i = 0; i < this.numberOfButtons; i++) {
+	        for (var i = 0; i < this._numberOfButtons; i++) {
 	          this.buttons[i].resize(buttonWidth, buttonHeight);
 	        }
 	      }
 	    },
 	    colorInterface: {
 	      value: function colorInterface() {
-	        for (var i = 0; i < this.numberOfButtons; i++) {
+	        for (var i = 0; i < this._numberOfButtons; i++) {
 	          this.buttons[i].colors = this.colors;
 	          this.buttons[i].render();
 	        }
@@ -3193,6 +3174,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.emit("change", this.active);
 	        this.render();
 	      }
+	    },
+	    numberOfButtons: {
+	      get: function () {
+	        return this._numberOfButtons;
+	      },
+	
+	      /**
+	       * Update how many buttons are in the interface
+	       * @param  {number} buttons How many buttons are in the interface
+	       */
+	      set: function (buttons) {
+	        this._numberOfButtons = buttons;
+	        for (var i = 0; i < this.buttons.length; i++) {
+	          this.buttons[i].destroy();
+	        }
+	        this.buttons = [];
+	        //  for (let i=0;i<this.buttons.length;i++) {
+	        //    this.buttons[i].destroy();
+	        //  }
+	        this.empty();
+	        this.buildInterface();
+	      }
 	    }
 	  });
 	
@@ -3224,13 +3227,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Number interface which is controllable by dragging or typing.
 	*
-	* @demo <span mt="number"></span>
+	* @demo <span nexus-ui="number"></span>
 	*
 	* @example
-	* var number = new mt.Number('#target')
+	* var number = new Nexus.Number('#target')
 	*
 	* @example
-	* var number = new mt.Number('#target',{
+	* var number = new Nexus.Number('#target',{
 	*   'size': [60,30],
 	*   'value': 0,
 	*   'min': 0,
@@ -3319,11 +3322,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }).bind(this));
 	
 	        this.parent.appendChild(this.element);
-	      }
-	    },
-	    buildInterface: {
-	      value: function buildInterface() {
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -3424,6 +3422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.on("change", function (v) {
 	          destination.value = v;
 	        });
+	        this.value = destination.value;
 	        /*  return {
 	            listener1: listener1,
 	            listener2: listener2,
@@ -3436,7 +3435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    passiveUpdate: {
 	      value: function passiveUpdate(v) {
-	        this.value = v;
+	        this._value.update(v);
 	        this.render();
 	      }
 	    },
@@ -3530,13 +3529,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Dropdown menu
 	*
-	* @demo <span mt="select"></span>
+	* @demo <span nexus-ui="select"></span>
 	*
 	* @example
-	* var select = new mt.Select('#target')
+	* var select = new Nexus.Select('#target')
 	*
 	* @example
-	* var select = new mt.Select('#target',{
+	* var select = new Nexus.Select('#target',{
 	*   'size': [100,30],
 	*   'options': ['default','options']
 	* })
@@ -3632,9 +3631,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function release() {}
 	    },
 	    defineOptions: {
-	      value: function defineOptions(v) {
-	        if (v) {
-	          this._options = v;
+	
+	      /**
+	       * Update the list of options. This removes all existing options and creates a new list of options.
+	       * @param  {array} options New array of options
+	       */
+	
+	      value: function defineOptions(options) {
+	        if (options) {
+	          this._options = options;
 	        }
 	
 	        for (var i = 0; i < this.element.options.length; i++) {
@@ -3725,20 +3730,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Dial with radial or linear interaction.
 	*
-	* @demo <span mt="dial"></span>
+	* @demo <span nexus-ui="dial"></span>
 	*
 	* @example
-	* var dial = new mt.Dial('#target')
+	* var dial = new Nexus.Dial('#target')
 	*
 	* @example
-	* var dial = new mt.Dial('#target',{
+	* var dial = new Nexus.Dial('#target',{
 	*   'size': [75,75],
 	*   'interaction': 'radial', // "radial", "vertical", or "horizontal"
 	*   'mode': 'relative', // "absolute" or "relative"
 	*   'min': 0,
 	*   'max': 1,
 	*   'step': 0,
-	*   'value': 20
+	*   'value': 0
 	* })
 	*
 	* @output
@@ -3770,46 +3775,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      min: 0,
 	      max: 1,
 	      step: 0,
-	      value: 20
+	      value: 0
 	    };
 	
 	    _get(Object.getPrototypeOf(Dial.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
 	    this.interaction = this.settings.interaction;
 	
-	    /**
-	    Absolute mode (dial value jumps to mouse click position) or relative mode (mouse drag changes value relative to its current position). Default: "relative".
-	    @type {string}
-	    @example dial.mode = "absolute";
-	    */
-	    this.mode = this.settings.mode;
-	
-	    // this.step should eventually be get/set
-	    // updating it will update the _value step model
-	    /**
-	    The increment that the dial's value changes by.
-	    @type {number}
-	    @example dial.step = 5;
-	    */
-	    this.step = this.settings.step; // float
-	
-	    /**
-	    Lower limit of the dial's output range
-	    @type {number}
-	    @example dial.min = 100;
-	    */
-	    this.min = this.settings.min;
-	
-	    /**
-	    Upper limit of the dial's output range
-	    @type {number}
-	    @example dial.max = 1000;
-	    */
-	    this.max = this.settings.max;
-	
 	    this._value = new Step(this.settings.min, this.settings.max, this.settings.step, this.settings.value);
 	
-	    this.position = new Interaction.Handle(this.mode, this.interaction, [0, this.width], [this.height, 0]);
+	    this.position = new Interaction.Handle(this.settings.mode, this.interaction, [0, this.width], [this.height, 0]);
 	
 	    this.init();
 	
@@ -3843,8 +3818,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.element.appendChild(this.handle2Fill);
 	        this.element.appendChild(this.handleLine);
 	        this.element.appendChild(this.screw);
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -4026,6 +3999,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    value: {
 	
+	      /*
+	      Dial's value. When set, it will automatically be adjust to fit min/max/step settings of the interface.
+	      @type {number}
+	      @example dial.value = 10;
+	       get value() {
+	        return this._value.value;
+	      }
+	       set value(value) {
+	        this._value.update(value);
+	        this.emit('change',this.value);
+	        this.render();
+	      }
+	      */
+	
 	      /**
 	      Dial's value. When set, it will automatically be adjust to fit min/max/step settings of the interface.
 	      @type {number}
@@ -4035,16 +4022,77 @@ return /******/ (function(modules) { // webpackBootstrap
 	      get: function () {
 	        return this._value.value;
 	      },
-	      set: function (value) {
-	        this._value.update(value);
-	        this.emit("change", this.value);
+	      set: function (v) {
+	        this._value.update(v);
+	        this.position.value = this._value.normalized;
+	        this.emit("change", this._value.value);
 	        this.render();
+	      }
+	    },
+	    min: {
+	
+	      /**
+	      Lower limit of the dial's output range
+	      @type {number}
+	      @example dial.min = 1000;
+	      */
+	
+	      get: function () {
+	        return this._value.min;
+	      },
+	      set: function (v) {
+	        this._value.min = v;
+	      }
+	    },
+	    max: {
+	
+	      /**
+	      Upper limit of the dial's output range
+	      @type {number}
+	      @example dial.max = 1000;
+	      */
+	
+	      get: function () {
+	        return this._value.max;
+	      },
+	      set: function (v) {
+	        this._value.max = v;
+	      }
+	    },
+	    step: {
+	
+	      /**
+	      The increment that the dial's value changes by.
+	      @type {number}
+	      @example dial.step = 5;
+	      */
+	
+	      get: function () {
+	        return this._value.step;
+	      },
+	      set: function (v) {
+	        this._value.step = v;
+	      }
+	    },
+	    mode: {
+	
+	      /**
+	      Absolute mode (dial's value jumps to mouse click position) or relative mode (mouse drag changes value relative to its current position). Default: "relative".
+	      @type {string}
+	      @example dial.mode = "relative";
+	      */
+	
+	      get: function () {
+	        return this.position.mode;
+	      },
+	      set: function (v) {
+	        this.position.mode = v;
 	      }
 	    },
 	    normalized: {
 	
 	      /**
-	      Normalized value of the dial. It will automatically adjust the dial's value to fit min/max/step settings.
+	      Normalized value of the dial.
 	      @type {number}
 	      @example dial.normalized = 0.5;
 	      */
@@ -4179,7 +4227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function sizeInterface() {
 	
 	        //let radius = Math.min(this.width,this.height) / 5;
-	        var radius = 4;
+	        var radius = 0;
 	
 	        this.pad.setAttribute("x", 0.5);
 	        this.pad.setAttribute("y", 0.5);
@@ -4216,13 +4264,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Piano keyboard interface
 	*
-	* @demo <div mt="piano"></div>
+	* @demo <div nexus-ui="piano"></div>
 	*
 	* @example
-	* var piano = new mt.Piano('#target')
+	* var piano = new Nexus.Piano('#target')
 	*
 	* @example
-	* var piano = new mt.Piano('#target',{
+	* var piano = new Nexus.Piano('#target',{
 	*     'size': [500,150],
 	*     'mode': 'button',  // 'button', 'toggle', or 'impulse'
 	*     'lowNote': 24,
@@ -4324,7 +4372,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (touch.exists) {
 	          this.addTouchListeners();
 	        }
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -4534,7 +4581,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ButtonTemplate = __webpack_require__(17);
 	var MatrixModel = __webpack_require__(25);
 	var CounterModel = __webpack_require__(28);
-	//let Time = require('../core/time');
 	var touch = __webpack_require__(9);
 	
 	var MatrixCell = (function (_ButtonTemplate) {
@@ -4587,8 +4633,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.element.appendChild(this.pad);
 	
 	        this.interactionTarget = this.pad;
-	
-	        this.sizeInterface();
 	
 	        /* events */
 	
@@ -4670,13 +4714,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Grid of buttons with built-in step sequencer.
 	*
-	* @demo <div mt="sequencer" style="width:400px;height:200px;"></div>
+	* @demo <div nexus-ui="sequencer" style="width:400px;height:200px;"></div>
 	*
 	* @example
-	* var sequencer = new mt.Sequencer('#target')
+	* var sequencer = new Nexus.Sequencer('#target')
 	*
 	* @example
-	* var sequencer = new mt.Sequencer('#target',{
+	* var sequencer = new Nexus.Sequencer('#target',{
 	*  'size': [400,200],
 	*  'mode': 'toggle',
 	*  'rows': 5,
@@ -4722,6 +4766,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.active = -1;
 	
 	    this.mode = this.settings.mode;
+	
+	    /**
+	     * The interval object which controls timing and sequence scheduling.
+	     * @type {interval}
+	     */
+	    this.interval = new Nexus.Interval(200, function () {}, false); // jshint ignore:line
 	
 	    /**
 	    A Matrix model containing methods for manipulating the sequencer's array of values.
@@ -4862,8 +4912,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.matrix.iterate(function (r, c, i) {
 	            if (c === _this.stepper.value) {
 	              _this.cells[i].pad.setAttribute("stroke", _this.colors.mediumLight);
-	              _this.cells[i].pad.setAttribute("stroke-width", "5");
-	              _this.cells[i].pad.setAttribute("stroke-opacity", "0.8");
+	              _this.cells[i].pad.setAttribute("stroke-width", "1");
+	              _this.cells[i].pad.setAttribute("stroke-opacity", "1");
 	            } else {
 	              _this.cells[i].pad.setAttribute("stroke", "none");
 	            }
@@ -4874,14 +4924,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    start: {
 	
 	      /**
-	      Start sequencing
-	      */
+	       * Start sequencing
+	       * @param  {number} ms Beat tempo in milliseconds
+	       */
 	
-	      value: function start() {
-	        if (!this.invertal) {
-	          this.next();
-	          this.interval = setInterval(this.next.bind(this), 200);
+	      value: function start(ms) {
+	        this.interval.event = this.next.bind(this);
+	        if (ms) {
+	          this.interval.ms(ms);
 	        }
+	        this.interval.start();
 	      }
 	    },
 	    stop: {
@@ -4891,8 +4943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      */
 	
 	      value: function stop() {
-	        clearInterval(this.interval);
-	        this.interval = false;
+	        this.interval.stop();
 	      }
 	    },
 	    next: {
@@ -4903,7 +4954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      value: function next() {
 	        this.stepper.next();
-	        this.emit("step", this.matrix.column(this.stepper.value));
+	        this.emit("step", this.matrix.column(this.stepper.value).reverse());
 	        this.render();
 	      }
 	    },
@@ -5172,9 +5223,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // so populate(0.7) would give each cell a 70% chance of being 1
 	    this.populate = {
 	      all: function (odds) {
-	        odds = new Sequence(odds);
+	        var oddsSequence = new Sequence(odds);
 	        _this.iterate(function (r, c) {
-	          _this.pattern[r][c] = math.coin(odds.next());
+	          _this.pattern[r][c] = math.coin(oddsSequence.next());
 	        });
 	        // This could be used so that each row has same odds pattern, even if row length is not divisibly by sequence length.
 	        //,() => {
@@ -5186,11 +5237,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      row: function () {
 	        var row = arguments[0] === undefined ? 0 : arguments[0];
-	        var odds = arguments[1] === undefined ? 0.5 : arguments[1];
+	        var odds = arguments[1] === undefined ? 1 : arguments[1];
 	
-	        odds = new Sequence(odds);
+	        var oddsSequence = new Sequence(odds);
 	        _this.pattern[row].forEach(function (cell, i) {
-	          _this.pattern[row][i] = math.coin(odds.next());
+	          _this.pattern[row][i] = math.coin(oddsSequence.next());
 	        });
 	        if (_this.ui) {
 	          _this.ui.update();
@@ -5198,11 +5249,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      },
 	      column: function () {
 	        var column = arguments[0] === undefined ? 0 : arguments[0];
-	        var odds = arguments[1] === undefined ? 0.5 : arguments[1];
+	        var odds = arguments[1] === undefined ? 1 : arguments[1];
 	
-	        odds = new Sequence(odds);
+	        var oddsSequence = new Sequence(odds);
 	        _this.pattern.forEach(function (row, i) {
-	          _this.pattern[i][column] = math.coin(odds.next());
+	          _this.pattern[i][column] = math.coin(oddsSequence.next());
 	        });
 	        if (_this.ui) {
 	          _this.ui.update();
@@ -5392,109 +5443,111 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Drunk = _interopRequire(__webpack_require__(27));
 	
 	var Sequence = (function () {
-	    function Sequence() {
-	        var sequence = arguments[0] === undefined ? [0, 10, 20, 30] : arguments[0];
-	        var mode = arguments[1] === undefined ? "up" : arguments[1];
-	        var position = arguments[2] === undefined ? false : arguments[2];
+	  function Sequence() {
+	    var sequence = arguments[0] === undefined ? [0, 10, 20, 30] : arguments[0];
+	    var mode = arguments[1] === undefined ? "up" : arguments[1];
+	    var position = arguments[2] === undefined ? false : arguments[2];
 	
-	        _classCallCheck(this, Sequence);
+	    _classCallCheck(this, Sequence);
 	
-	        this.values = sequence;
-	        if (!Array.isArray(this.values)) {
-	            this.values = [this.values];
+	    this.values = sequence;
+	    if (!Array.isArray(this.values)) {
+	      this.values = [this.values];
+	    }
+	    this._mode = mode;
+	    this.position = position;
+	
+	    this.drunkWalk = new Drunk(0, this.values.length - 1);
+	
+	    this.startValues = {
+	      up: 0,
+	      down: this.values.length - 1,
+	      drunk: ~ ~(this.values.length / 2),
+	      random: math.ri(this.values.length)
+	    };
+	
+	    if (this.position !== false) {
+	      this.next = this[this._mode];
+	    } else {
+	      this.next = this.first;
+	    }
+	  }
+	
+	  _createClass(Sequence, {
+	    mode: {
+	      get: function () {
+	        return this._mode;
+	      },
+	      set: function (mode) {
+	        if (!(mode === "up" || mode === "down" || mode === "random" || mode === "drunk")) {
+	          console.error("The only modes currently allowed are: up, down, random, drunk");
+	          return;
 	        }
 	        this._mode = mode;
-	        this.position = position;
-	
-	        this.drunkWalk = new Drunk(0, this.values.length - 1);
-	
-	        this.startValues = {
-	            up: 0,
-	            down: this.values.length - 1,
-	            drunk: ~ ~(this.values.length / 2),
-	            random: math.ri(this.values.length)
-	        };
-	
+	        if (this.position) {
+	          this.next = this[this._mode];
+	        }
+	      }
+	    },
+	    value: {
+	      get: function () {
+	        return this.values[this.position];
+	      },
+	      set: function (v) {
+	        this.position = this.values.indexOf(v);
+	      }
+	    },
+	    first: {
+	      value: function first() {
 	        if (this.position !== false) {
-	            this.next = this[this._mode];
-	        } else {
-	            this.next = this.first;
+	          this.next = this[this._mode];
+	          return this.next();
 	        }
+	        this.position = this.startValues[this._mode];
+	        this.next = this[this._mode];
+	        return this.value;
+	      }
+	    },
+	    up: {
+	      value: function up() {
+	        this.position++;
+	        this.position %= this.values.length;
+	        return this.value;
+	      }
+	    },
+	    down: {
+	      value: function down() {
+	        this.position--;
+	        if (this.position < 0) {
+	          this.position = (this.position + this.values.length) % this.values.length;
+	        }
+	        return this.value;
+	      }
+	    },
+	    random: {
+	      value: function random() {
+	        this.position = math.ri(0, this.values.length);
+	        return this.value;
+	      }
+	    },
+	    drunk: {
+	      value: function drunk() {
+	        this.drunkWalk.max = this.values.length;
+	        this.drunkWalk.value = this.position;
+	        this.position = this.drunkWalk.next();
+	        return this.value;
+	      }
+	
+	      /* future methods
+	      .group(start,stop) -- outputs a group of n items from the list, with wrapping
+	      .loop(start,stop) -- confines sequencing to a subset of the values
+	          (could even have a distinction between .originalValues and the array of values being used)
+	      */
+	
 	    }
+	  });
 	
-	    _createClass(Sequence, {
-	        mode: {
-	            get: function () {
-	                return this._mode;
-	            },
-	            set: function (mode) {
-	                if (!(mode === "up" || mode === "down" || mode === "random" || mode === "drunk")) {
-	                    console.error("The only modes currently allowed are: up, down, random, drunk");
-	                    return;
-	                }
-	                this._mode = mode;
-	                if (this.position) {
-	                    this.next = this[this._mode];
-	                }
-	            }
-	        },
-	        value: {
-	            get: function () {
-	                return this.values[this.position];
-	            },
-	            set: function (v) {
-	                this.position = this.values.indexOf(v);
-	            }
-	        },
-	        first: {
-	            value: function first() {
-	                if (this.position !== false) {
-	                    this.next = this[this._mode];
-	                    return this.next();
-	                }
-	                this.position = this.startValues[this._mode];
-	                this.next = this[this._mode];
-	                return this.value;
-	            }
-	        },
-	        up: {
-	            value: function up() {
-	                this.position++;
-	                this.position %= this.values.length;
-	                return this.value;
-	            }
-	        },
-	        down: {
-	            value: function down() {
-	                this.position--;
-	                this.position %= this.values.length;
-	                return this.value;
-	            }
-	        },
-	        random: {
-	            value: function random() {
-	                this.position = math.ri(0, this.values.length);
-	                return this.value;
-	            }
-	        },
-	        drunk: {
-	            value: function drunk() {
-	                this.drunkWalk.max = this.values.length;
-	                this.drunkWalk.value = this.position;
-	                this.position = this.drunkWalk.step();
-	                return this.value;
-	            }
-	
-	            /* future methods
-	            .group(start,stop) -- outputs a group of n items from the list, with wrapping
-	            .loop(start,stop) -- confines sequencing to a subset of the values
-	                (could even have a distinction between .originalValues and the array of values being used)
-	            */
-	
-	        }
-	    });
-	
-	    return Sequence;
+	  return Sequence;
 	})();
 	
 	module.exports = Sequence;
@@ -5531,8 +5584,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    _createClass(Drunk, {
-	        step: {
-	            value: function step() {
+	        next: {
+	            value: function next() {
 	                this.value += math.pick(-1 * this.increment, this.increment);
 	                if (this.value > this.max) {
 	                    if (this.loop) {
@@ -5658,7 +5711,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.drunkWalk.min = this.min;
 	                this.drunkWalk.max = this.max;
 	                this.drunkWalk.value = this.value;
-	                this.value = this.drunkWalk.step();
+	                this.value = this.drunkWalk.next();
 	                return this.value;
 	            }
 	        }
@@ -5697,17 +5750,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Interface for moving a sound around an array of speakers. Speaker locations can be customized. The interface calculates the amplitude that should be sent to each speaker, according to different panning modes.
 	*
-	* @demo <span mt="pan2D"></span>
+	* @demo <span nexus-ui="pan2D"></span>
 	*
 	* @example
-	* var pan2d = new mt.Pan2d('#target')
+	* var pan2d = new Nexus.Pan2d('#target')
 	*
 	* @example
-	* var pan2d = new mt.Pan2d('#target',{
-	*     'size': [200,200],
-	*     'range': 0.5,  // panning radius of each speaker
-	*     'mode': 'absolute',   // 'absolute' or 'relative'
-	*     'speakers': [  // the speaker [x,y] positions
+	* var pan2d = new Nexus.Pan2D('#target',{
+	*   'size': [200,200],
+	*   'range': 0.5,  // panning radius of each speaker
+	*   'mode': 'absolute',   // 'absolute' or 'relative'
+	*   'speakers': [  // the speaker [x,y] positions
 	*       [0.5,0.2],
 	*       [0.75,0.25],
 	*       [0.8,0.5],
@@ -5716,7 +5769,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*       [0.25,0.75]
 	*       [0.2,0.5],
 	*       [0.25,0.25]
-	*     ]
+	*   ]
 	* })
 	*
 	* @output
@@ -5804,7 +5857,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	          this.speakerElements.push(speakerElement);
 	        }
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -5988,12 +6040,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	* Tilt
 	*
-	* @description 2- or 3-axis tilt sensor (depending on your device and browser).
+	* @description Device tilt sensor with 2 or 3 axes (depending on your device and browser).
 	*
-	* @demo <span mt='tilt'></span>
+	* @demo <span nexus-ui='tilt'></span>
 	*
 	* @example
-	* var tilt = new mt.Tilt('#target')
+	* var tilt = new Nexus.Tilt('#target')
 	*
 	* @output
 	* change
@@ -6031,11 +6083,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (window.DeviceOrientationEvent) {
 	      this.orientationListener = window.addEventListener("deviceorientation", this.boundUpdate, false);
-	    } /*else if (window.OrientationEvent) {
-	      //	  	window.addEventListener('MozOrientation', this.boundMozTilt, false);
-	      } else {
-	      	console.log('Not supported on your device or browser.');
-	      } */
+	    } else {
+	      this._active = false;
+	      this.colorInterface();
+	    }
+	
+	    /*else if (window.OrientationEvent) {
+	    //	  	window.addEventListener('MozOrientation', this.boundMozTilt, false);
+	    } else {
+	    console.log('Not supported on your device or browser.');
+	    } */
 	  }
 	
 	  _inherits(Tilt, _Interface);
@@ -6045,21 +6102,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildInterface() {
 	
 	        this.title = svg.create("text");
-	        this.circleLR = svg.create("circle");
-	        this.circleFB = svg.create("circle");
+	        this.circleX = svg.create("circle");
+	        this.circleY = svg.create("circle");
+	        this.circleZ = svg.create("circle");
 	
-	        this.circleLR.setAttribute("cx", this.width * 3 / 12);
-	        this.circleLR.setAttribute("cy", this.height * 3 / 4);
-	        this.circleLR.setAttribute("r", this.height / 10);
-	        this.circleLR.setAttribute("opacity", "0.7");
+	        this.barX = svg.create("path");
+	        this.barY = svg.create("path");
+	        this.barZ = svg.create("path");
 	
-	        this.circleFB.setAttribute("cx", this.width * 9 / 12);
-	        this.circleFB.setAttribute("cy", this.height * 3 / 4);
-	        this.circleFB.setAttribute("r", this.height / 10);
-	        this.circleFB.setAttribute("opacity", "0.7");
+	        this.barX2 = svg.create("path");
+	        this.barY2 = svg.create("path");
+	        this.barZ2 = svg.create("path");
+	
+	        this.barX.setAttribute("opacity", "0.8");
+	        this.barY.setAttribute("opacity", "0.8");
+	        this.barZ.setAttribute("opacity", "0.8");
+	        this.barX2.setAttribute("opacity", "0.8");
+	        this.barY2.setAttribute("opacity", "0.8");
+	        this.barZ2.setAttribute("opacity", "0.8");
+	
+	        this.circleX.setAttribute("cx", this.width * 3 / 12);
+	        this.circleX.setAttribute("cy", this.height * 3 / 4);
+	        this.circleX.setAttribute("r", this.height / 10);
+	        this.circleX.setAttribute("opacity", "0.4");
+	
+	        this.circleY.setAttribute("cx", this.width * 6 / 12);
+	        this.circleY.setAttribute("cy", this.height * 3 / 4);
+	        this.circleY.setAttribute("r", this.height / 10);
+	        this.circleY.setAttribute("opacity", "0.4");
+	
+	        this.circleZ.setAttribute("cx", this.width * 9 / 12);
+	        this.circleZ.setAttribute("cy", this.height * 3 / 4);
+	        this.circleZ.setAttribute("r", this.height / 10);
+	        this.circleZ.setAttribute("opacity", "0.4");
+	
+	        this.barX.setAttribute("stroke-width", Math.round(this.height / 30));
+	        this.barY.setAttribute("stroke-width", Math.round(this.height / 30));
+	        this.barZ.setAttribute("stroke-width", Math.round(this.height / 30));
+	
+	        this.barX.setAttribute("fill", "none");
+	        this.barY.setAttribute("fill", "none");
+	        this.barZ.setAttribute("fill", "none");
+	
+	        this.barX2.setAttribute("stroke-width", Math.round(this.height / 30));
+	        this.barY2.setAttribute("stroke-width", Math.round(this.height / 30));
+	        this.barZ2.setAttribute("stroke-width", Math.round(this.height / 30));
+	
+	        this.barX2.setAttribute("fill", "none");
+	        this.barY2.setAttribute("fill", "none");
+	        this.barZ2.setAttribute("fill", "none");
 	
 	        this.title.setAttribute("x", this.width / 2);
-	        this.title.setAttribute("y", this.height / 2 + 7);
+	        this.title.setAttribute("y", this.height / 3 + 7);
 	        this.title.setAttribute("font-size", "15px");
 	        this.title.setAttribute("font-weight", "bold");
 	        this.title.setAttribute("letter-spacing", "2px");
@@ -6067,8 +6161,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.title.setAttribute("text-anchor", "middle");
 	        this.title.textContent = "TILT";
 	
-	        //  this.element.appendChild(this.circleFB);
-	        //  this.element.appendChild(this.circleLR);
+	        this.element.appendChild(this.circleX);
+	        this.element.appendChild(this.circleY);
+	        this.element.appendChild(this.circleZ);
+	
+	        this.element.appendChild(this.barX);
+	        this.element.appendChild(this.barY);
+	        this.element.appendChild(this.barZ);
+	
+	        this.element.appendChild(this.barX2);
+	        this.element.appendChild(this.barY2);
+	        this.element.appendChild(this.barZ2);
+	
 	        this.element.appendChild(this.title);
 	      }
 	    },
@@ -6077,13 +6181,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        if (this._active) {
 	          this.element.style.backgroundColor = this.colors.accent;
-	          this.circleFB.setAttribute("fill", this.colors.light);
-	          this.circleLR.setAttribute("fill", this.colors.light);
+	          this.circleX.setAttribute("fill", this.colors.light);
+	          this.circleY.setAttribute("fill", this.colors.light);
+	          this.circleZ.setAttribute("fill", this.colors.light);
+	          this.circleX.setAttribute("stroke", this.colors.light);
+	          this.circleY.setAttribute("stroke", this.colors.light);
+	          this.circleZ.setAttribute("stroke", this.colors.light);
+	          this.barX.setAttribute("stroke", this.colors.light);
+	          this.barY.setAttribute("stroke", this.colors.light);
+	          this.barZ.setAttribute("stroke", this.colors.light);
+	          this.barX2.setAttribute("stroke", this.colors.light);
+	          this.barY2.setAttribute("stroke", this.colors.light);
+	          this.barZ2.setAttribute("stroke", this.colors.light);
 	          this.title.setAttribute("fill", this.colors.light);
 	        } else {
 	          this.element.style.backgroundColor = this.colors.fill;
-	          this.circleLR.setAttribute("fill", this.colors.mediumLight);
-	          this.circleFB.setAttribute("fill", this.colors.mediumLight);
+	          this.circleX.setAttribute("fill", this.colors.mediumLight);
+	          this.circleY.setAttribute("fill", this.colors.mediumLight);
+	          this.circleZ.setAttribute("fill", this.colors.mediumLight);
+	          this.circleX.setAttribute("stroke", this.colors.mediumLight);
+	          this.circleY.setAttribute("stroke", this.colors.mediumLight);
+	          this.circleZ.setAttribute("stroke", this.colors.mediumLight);
+	          this.barX.setAttribute("stroke", this.colors.mediumLight);
+	          this.barY.setAttribute("stroke", this.colors.mediumLight);
+	          this.barZ.setAttribute("stroke", this.colors.mediumLight);
+	          this.barX2.setAttribute("stroke", this.colors.mediumLight);
+	          this.barY2.setAttribute("stroke", this.colors.mediumLight);
+	          this.barZ2.setAttribute("stroke", this.colors.mediumLight);
 	          this.title.setAttribute("fill", this.colors.mediumLight);
 	        }
 	      }
@@ -6094,27 +6218,87 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	          var y = v.beta;
 	          var x = v.gamma;
+	          var z = v.alpha;
 	
 	          // take the original -90 to 90 scale and normalize it 0-1
 	          x = math.scale(x, -90, 90, 0, 1);
 	          y = math.scale(y, -90, 90, 0, 1);
+	          z = math.scale(z, 0, 360, 0, 1);
+	
+	          var handlePoints = {
+	            start: Math.PI * 1.5,
+	            end: math.clip(math.scale(x, 0, 0.5, Math.PI * 1.5, Math.PI * 0.5), Math.PI * 0.5, Math.PI * 1.5)
+	          };
+	          var handle2Points = {
+	            start: Math.PI * 2.5,
+	            end: math.clip(math.scale(x, 0.5, 1, Math.PI * 2.5, Math.PI * 1.5), Math.PI * 1.5, Math.PI * 2.5)
+	          };
+	
+	          var handlePath = svg.arc(this.circleX.cx.baseVal.value, this.circleX.cy.baseVal.value, this.circleX.r.baseVal.value, handlePoints.start, handlePoints.end);
+	          var handle2Path = svg.arc(this.circleX.cx.baseVal.value, this.circleX.cy.baseVal.value, this.circleX.r.baseVal.value, handle2Points.start, handle2Points.end);
+	
+	          this.barX.setAttribute("d", handlePath);
+	          this.barX2.setAttribute("d", handle2Path);
+	
+	          handlePoints = {
+	            start: Math.PI * 1.5,
+	            end: math.clip(math.scale(y, 0, 0.5, Math.PI * 1.5, Math.PI * 0.5), Math.PI * 0.5, Math.PI * 1.5)
+	          };
+	          handle2Points = {
+	            start: Math.PI * 2.5,
+	            end: math.clip(math.scale(y, 0.5, 1, Math.PI * 2.5, Math.PI * 1.5), Math.PI * 1.5, Math.PI * 2.5)
+	          };
+	
+	          handlePath = svg.arc(this.circleY.cx.baseVal.value, this.circleY.cy.baseVal.value, this.circleY.r.baseVal.value, handlePoints.start, handlePoints.end);
+	          handle2Path = svg.arc(this.circleY.cx.baseVal.value, this.circleY.cy.baseVal.value, this.circleY.r.baseVal.value, handle2Points.start, handle2Points.end);
+	
+	          this.barY.setAttribute("d", handlePath);
+	          this.barY2.setAttribute("d", handle2Path);
+	
+	          handlePoints = {
+	            start: Math.PI * 1.5,
+	            end: math.clip(math.scale(z, 0, 0.5, Math.PI * 1.5, Math.PI * 0.5), Math.PI * 0.5, Math.PI * 1.5)
+	          };
+	          handle2Points = {
+	            start: Math.PI * 2.5,
+	            end: math.clip(math.scale(z, 0.5, 1, Math.PI * 2.5, Math.PI * 1.5), Math.PI * 1.5, Math.PI * 2.5)
+	          };
+	
+	          handlePath = svg.arc(this.circleZ.cx.baseVal.value, this.circleZ.cy.baseVal.value, this.circleZ.r.baseVal.value, handlePoints.start, handlePoints.end);
+	          handle2Path = svg.arc(this.circleZ.cx.baseVal.value, this.circleZ.cy.baseVal.value, this.circleZ.r.baseVal.value, handle2Points.start, handle2Points.end);
+	
+	          this.barZ.setAttribute("d", handlePath);
+	          this.barZ2.setAttribute("d", handle2Path);
+	
+	          /*
+	           let pointsX = {
+	            start: 0,
+	            end: math.scale( x, 0, 1, 0, Math.PI*2 )
+	          };
+	          //  console.log(this.circleX.cx.baseVal.value);
+	           let pathX = svg.arc(this.circleX.cx.baseVal.value, this.circleX.cy.baseVal.value, this.circleX.r.baseVal.value*2, pointsX.start, pointsX.end);
+	           this.barX.setAttribute('d',pathX); */
 	
 	          //this.textH.textContent = math.prune(x,2);
 	          //this.textV.textContent = math.prune(y,2);
 	          //
-	          this.circleFB.setAttribute("opacity", x);
-	          this.circleLR.setAttribute("opacity", y);
+	          //  this.circleX.setAttribute('opacity',x);
+	          //  this.circleY.setAttribute('opacity',y);
+	          //  this.circleZ.setAttribute('opacity',z);
 	
 	          this.emit("change", {
 	            x: x,
-	            y: y
+	            y: y,
+	            z: z
 	          });
 	        }
 	      }
 	    },
 	    click: {
 	      value: function click() {
-	        this.active = !this.active;
+	        if (window.DeviceOrientationEvent) {
+	          this.active = !this.active;
+	        }
 	      }
 	    },
 	    active: {
@@ -6292,13 +6476,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Multislider
 	*
-	* @demo <span mt="multislider"></span>
+	* @demo <span nexus-ui="multislider"></span>
 	*
 	* @example
-	* var multislider = new mt.Multislider('#target')
+	* var multislider = new Nexus.Multislider('#target')
 	*
 	* @example
-	* var multislider = new mt.Multislider('#target',{
+	* var multislider = new Nexus.Multislider('#target',{
 	*  'size': [200,100],
 	*  'numberOfSliders': 5,
 	*  'min': 0,
@@ -6405,7 +6589,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (touch.exists) {
 	          this.addTouchListeners();
 	        }
-	        this.sizeInterface();
 	      }
 	    },
 	    colorInterface: {
@@ -6932,10 +7115,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Stereo crossfader.
 	*
-	* @demo <span mt="pan"></span>
+	* @demo <span nexus-ui="pan"></span>
 	*
 	* @example
-	* var pan = new mt.Pan('#target')
+	* var pan = new Nexus.Pan('#target')
 	*
 	* @output
 	* change
@@ -6943,7 +7126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	* The event data is an object containing the interface's <i>value</i> (-1 to 1), as well as <i>L</i> and <i>R</i> amplitude values (0-1) for left and right speakers, calculated by a square-root crossfade algorithm.
 	*
 	* @outputexample
-	* dial.on('change',function(v) {
+	* pan.on('change',function(v) {
 	*   console.log(v);
 	* })
 	*
@@ -7001,8 +7184,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        this.element.appendChild(this.bar);
 	        this.element.appendChild(this.knob);
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -7239,33 +7420,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Interactive linear ramp visualization.
 	*
-	* @demo <span mt="envelope"></span>
+	* @demo <span nexus-ui="envelope"></span>
 	*
 	* @example
-	* var envelope = new mt.Envelope('#target')
+	* var envelope = new Nexus.Envelope('#target')
 	*
 	* @example
-	* var envelope = new mt.Envelope('#target',{
-	*     'size': [300,150],
-	*     'scale': 1,
-	*     'points': [
-	*       {
-	*           x: 0.1,
-	*           y: 0.4
-	*       },
-	*       {
-	*           x: 0.35,
-	*           y: 0.6
-	*       },
-	*       {
-	*           x: 0.65,
-	*           y: 0.2
-	*       },
-	*       {
-	*           x: 0.9,
-	*           y: 0.4
-	*       },
-	*     ]
+	* var envelope = new Nexus.Envelope('#target',{
+	*   'size': [300,150],
+	*   'points': [
+	*     {
+	*       x: 0.1,
+	*       y: 0.4
+	*     },
+	*     {
+	*       x: 0.35,
+	*       y: 0.6
+	*     },
+	*     {
+	*       x: 0.65,
+	*       y: 0.2
+	*     },
+	*     {
+	*       x: 0.9,
+	*       y: 0.4
+	*     },
+	*   ]
 	* })
 	*
 	* @output
@@ -7288,7 +7468,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var defaults = {
 	      size: [300, 150],
-	      scale: 1,
 	      points: [{
 	        x: 0.1,
 	        y: 0.4
@@ -7307,8 +7486,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _get(Object.getPrototypeOf(Envelope.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
 	    this.points = this.settings.points;
-	
-	    this.scale = this.settings.scale;
 	
 	    this.nodes = [];
 	
@@ -7339,8 +7516,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.fill.setAttribute("fill-opacity", "0.2");
 	
 	        this.element.appendChild(this.fill);
-	
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -7684,13 +7859,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Audio spectrum visualization
 	*
-	* @demo <span mt="spectrogram"></span>
+	* @demo <span nexus-ui="spectrogram"></span>
 	*
 	* @example
-	* var spectrogram = new mt.Spectrogram('#target')
+	* var spectrogram = new Nexus.Spectrogram('#target')
 	*
 	* @example
-	* var spectrogram = new mt.Spectrogram('#target',{
+	* var spectrogram = new Nexus.Spectrogram('#target',{
 	*   'size': [300,150]
 	* })
 	*
@@ -7712,7 +7887,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    _get(Object.getPrototypeOf(Spectrogram.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
-	    this.context = mt.context;
+	    this.context = Nexus.context; // jshint ignore:line
 	
 	    this.analyser = this.context.createAnalyser();
 	    this.analyser.fftSize = 2048;
@@ -7733,11 +7908,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildFrame() {
 	        this.canvas = new dom.SmartCanvas(this.parent);
 	        this.element = this.canvas.element;
-	      }
-	    },
-	    buildInterface: {
-	      value: function buildInterface() {
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -7851,14 +8021,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Stereo decibel meter
 	*
-	* @demo <span mt="meter"></span>
+	* @demo <span nexus-ui="meter"></span>
 	*
 	* @example
-	* var meter = new mt.Meter('#target')
+	* var meter = new Nexus.Meter('#target')
 	*
 	* @example
-	* var meter = new mt.Meter('#target',{
-	*   'size': [75,75]
+	* var meter = new Nexus.Meter('#target',{
+	*   size: [75,75]
 	* })
 	*
 	* @output
@@ -7879,7 +8049,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    _get(Object.getPrototypeOf(Meter.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
-	    this.context = mt.context;
+	    this.context = Nexus.context; // jshint ignore:line
 	
 	    this.channels = 2;
 	
@@ -7926,11 +8096,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildFrame() {
 	        this.canvas = new dom.SmartCanvas(this.parent);
 	        this.element = this.canvas.element;
-	      }
-	    },
-	    buildInterface: {
-	      value: function buildInterface() {
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -8073,13 +8238,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @description Visualizes a waveform's stream of values.
 	*
-	* @demo <span mt="oscilloscope"></span>
+	* @demo <span nexus-ui="oscilloscope"></span>
 	*
 	* @example
-	* var oscilloscope = new mt.Oscilloscope('#target')
+	* var oscilloscope = new Nexus.Oscilloscope('#target')
 	*
 	* @example
-	* var oscilloscope = new mt.Oscilloscope('#target',{
+	* var oscilloscope = new Nexus.Oscilloscope('#target',{
 	*   'size': [300,150]
 	* })
 	*
@@ -8101,7 +8266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    _get(Object.getPrototypeOf(Oscilloscope.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
-	    this.context = mt.context;
+	    this.context = Nexus.context; // jshint ignore:line
 	
 	    this.analyser = this.context.createAnalyser();
 	    this.analyser.fftSize = 2048;
@@ -8125,11 +8290,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildFrame() {
 	        this.canvas = new dom.SmartCanvas(this.parent);
 	        this.element = this.canvas.element;
-	      }
-	    },
-	    buildInterface: {
-	      value: function buildInterface() {
-	        this.sizeInterface();
 	      }
 	    },
 	    sizeInterface: {
@@ -8241,6 +8401,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	
+	var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
+	
 	var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { "default": obj }; };
 	
 	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8248,24 +8410,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 	
 	/*
-	What does the API look like?
+	Main concept:
+	synth = new Nexus.Rack('elementID');
 	
-	1) Main concept:
-	synth = mt.rack('#container');
+	Transform all elements inside the div
+	synth.elementID will hold the first slider interface
 	
-	Transform all elements inside a div
-	synth.ui.slider1 will hold the first slider interface
-	
-	
-	2) What about writing a rack that is re-usable?
+	2) In future, potentially writing a rack that is re-usable?
 	Could also take JSON
 	
-	mt.rack('#container',{
+	new Nexus.Rack('#target',{
 	  pre: () => {
 	    create some divs here, or some audio code
 	  },
 	  interface: {
-	    slider1: mt.create.slider({
+	    slider1: Nexus.add.slider({
 	      top:10,
 	      left:10,
 	      width:50,
@@ -8274,7 +8433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      max: 100,
 	      step: 1
 	    }),
-	    wave1: mt.create.waveform({
+	    wave1: Nexus.add.waveform({
 	      file: './path/to/file.mp3',
 	      width:500,
 	      height:100,
@@ -8290,17 +8449,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var transform = _interopRequireWildcard(__webpack_require__(39));
 	
+	var dom = _interopRequire(__webpack_require__(7));
+	
 	var Rack = (function () {
 	  function Rack(target, name, open) {
 	    _classCallCheck(this, Rack);
 	
 	    this.meta = {};
 	    this.meta.target = target;
-	    this.meta.parent = document.getElementById(target); // should be a generic function for parsing a "target" argument that checks for string/DOM/jQUERY
+	    this.meta.parent = dom.parseElement(target); // should be a generic function for parsing a "target" argument that checks for string/DOM/jQUERY
 	    this.meta.title = name;
 	    this.meta.open = open;
 	    this.meta.colors = {};
-	    var defaultColors = mt.colors;
+	    var defaultColors = Nexus.colors; // jshint ignore:line
 	    this.meta.colors.accent = defaultColors.accent;
 	    this.meta.colors.fill = defaultColors.fill;
 	    this.meta.colors.light = defaultColors.light;
@@ -8370,8 +8531,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        this.meta.parent.appendChild(this.meta.contents);
 	
-	        var width = this.meta.parent.style.width = getComputedStyle(this.meta.parent).getPropertyValue("width");
-	        this.meta.parent.style.width = width;
+	        //  var width = this.meta.parent.style.width = getComputedStyle(this.meta.parent).getPropertyValue('width');
+	        //    this.meta.parent.style.width = width;
 	
 	        var ui = transform.section(this.meta.target);
 	        for (var key in ui) {
@@ -8437,8 +8598,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var Interfaces = _interopRequire(__webpack_require__(2));
 	
-	var element = function (element, type) {
-	  var options = {};
+	var createInterfaceID = function (widget, interfaceIDs) {
+	  var type = widget.type;
+	  if (interfaceIDs[type]) {
+	    interfaceIDs[type]++;
+	  } else {
+	    interfaceIDs[type] = 1;
+	  }
+	  return type + interfaceIDs[type];
+	};
+	
+	var element = function (element, type, options) {
+	  options = options || {};
 	  for (var i = 0; i < element.attributes.length; i++) {
 	    var att = element.attributes[i];
 	    //  try {
@@ -8455,6 +8626,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var section = function (parent) {
 	
+	  var interfaceIDs = {};
+	
 	  var container = dom.parseElement(parent);
 	
 	  var ui = {};
@@ -8465,18 +8638,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    elements.push(htmlElements[i]);
 	  }
 	  for (var i = 0; i < elements.length; i++) {
-	    var type = elements[i].getAttribute("mt");
+	    var type = elements[i].getAttribute("nexus-ui");
 	    if (type) {
-	      var widget = element(elements[i], type);
-	      ui[widget.id] = widget;
+	      var formattedType = false;
+	      for (var key in Interfaces) {
+	        if (type.toLowerCase() === key.toLowerCase()) {
+	          formattedType = key;
+	        }
+	      }
+	      console.log(formattedType);
+	      var widget = element(elements[i], formattedType);
+	      if (widget.id) {
+	        ui[widget.id] = widget;
+	      } else {
+	        var id = createInterfaceID(widget, interfaceIDs);
+	        ui[id] = widget;
+	      }
 	    }
 	  }
 	
 	  return ui;
 	};
 	
-	exports.section = section;
+	var add = function (type, options) {
+	  var target = document.createElement("div");
+	  var parent = document.body;
+	  if (options) {
+	    parent = options.parent;
+	  } else {
+	    options = {};
+	  }
+	  parent = dom.parseElement(parent);
+	  parent.appendChild(target);
+	  options.target = target;
+	  if (options.size) {
+	    target.style.width = options.size[0] + "px";
+	    target.style.height = options.size[1] + "px";
+	  }
+	  return element(target, type, options);
+	};
+	
 	exports.element = element;
+	exports.section = section;
+	exports.add = add;
 
 /***/ },
 /* 40 */
@@ -8490,48 +8694,341 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 	
-	var WAAClock = _interopRequire(__webpack_require__(41));
+	var math = _interopRequire(__webpack_require__(5));
 	
-	var Interval = _interopRequire(__webpack_require__(44));
+	var Tune = (function () {
+	  function Tune() {
+	    _classCallCheck(this, Tune);
 	
-	var Time = (function () {
-	  function Time(context) {
-	    _classCallCheck(this, Time);
+	    // the scale as ratios
+	    this.scale = [];
 	
-	    this.createClock(context);
+	    // i/o modes
+	    this.mode = {
+	      output: "frequency",
+	      input: "step"
+	    };
+	
+	    // ET major
+	    this.etmajor = [261.62558, 293.664764, 329.627563, 349.228241, 391.995422, 440, 493.883301, 523.25116];
+	
+	    // Root frequency.
+	    this.root = math.mtof(60); // * Math.pow(2,(60-69)/12);
+	
+	    // default is a major scale
+	    this.createScale(0, 2, 4, 5, 7, 9, 11);
 	  }
 	
-	  _createClass(Time, {
-	    createClock: {
-	      value: function createClock(context) {
-	        this.clock = new WAAClock(context);
-	        this.clock.start();
+	  _createClass(Tune, {
+	    note: {
+	
+	      /* Return data in the mode you are in (freq, ratio, or midi) */
+	
+	      value: function note(input, octave) {
+	
+	        var newvalue = undefined;
+	
+	        if (this.mode.output === "frequency") {
+	          newvalue = this.frequency(input, octave);
+	        } else if (this.mode.output === "ratio") {
+	          newvalue = this.ratio(input, octave);
+	        } else if (this.mode.output === "MIDI") {
+	          newvalue = this.MIDI(input, octave);
+	        } else {
+	          newvalue = this.frequency(input, octave);
+	        }
+	
+	        return newvalue;
 	      }
 	    },
-	    interval: {
-	      value: function interval(rate, func, on) {
-	        return new Interval(rate, func, on, this.clock);
+	    frequency: {
+	
+	      /* Return freq data */
+	
+	      value: function frequency(stepIn, octaveIn) {
+	
+	        if (this.mode.input === "midi" || this.mode.input === "MIDI") {
+	          this.stepIn += 60;
+	        }
+	
+	        // what octave is our input
+	        var octave = Math.floor(stepIn / this.scale.length);
+	
+	        if (octaveIn) {
+	          octave += octaveIn;
+	        }
+	
+	        // which scale degree (0 - scale length) is our input
+	        var scaleDegree = stepIn % this.scale.length;
+	
+	        while (scaleDegree < 0) {
+	          scaleDegree += this.scale.length;
+	        }
+	
+	        var ratio = this.scale[scaleDegree];
+	
+	        var freq = this.root * ratio;
+	
+	        freq = freq * Math.pow(2, octave);
+	
+	        // truncate irrational numbers
+	        freq = Math.floor(freq * 100000000000) / 100000000000;
+	
+	        return freq;
+	      }
+	    },
+	    ratio: {
+	
+	      /* Force return ratio data */
+	
+	      value: function ratio(stepIn, octaveIn) {
+	
+	        if (this.mode.input === "midi" || this.mode.input === "MIDI") {
+	          this.stepIn += 60;
+	        }
+	
+	        // what octave is our input
+	        var octave = Math.floor(stepIn / this.scale.length);
+	
+	        if (octaveIn) {
+	          octave += octaveIn;
+	        }
+	
+	        // which scale degree (0 - scale length) is our input
+	        var scaleDegree = stepIn % this.scale.length;
+	
+	        // what ratio is our input to our key
+	        var ratio = Math.pow(2, octave) * this.scale[scaleDegree];
+	
+	        ratio = Math.floor(ratio * 100000000000) / 100000000000;
+	
+	        return ratio;
+	      }
+	    },
+	    MIDI: {
+	
+	      /* Force return adjusted MIDI data */
+	
+	      value: function MIDI(stepIn, octaveIn) {
+	
+	        var newvalue = this.frequency(stepIn, octaveIn);
+	
+	        var n = 69 + 12 * Math.log(newvalue / 440) / Math.log(2);
+	
+	        n = Math.floor(n * 1000000000) / 1000000000;
+	
+	        return n;
+	      }
+	    },
+	    createScale: {
+	      value: function createScale() {
+	        var newScale = [];
+	        for (var i = 0; i < arguments.length; i++) {
+	          newScale.push(math.mtof(60 + arguments[i]));
+	        }
+	        this.loadScaleFromFrequencies(newScale);
+	      }
+	    },
+	    createJIScale: {
+	      value: function createJIScale() {
+	        this.scale = [];
+	        for (var i = 0; i < arguments.length; i++) {
+	          this.scale.push(arguments[i]);
+	        }
+	      }
+	    },
+	    loadScaleFromFrequencies: {
+	      value: function loadScaleFromFrequencies(freqs) {
+	        this.scale = [];
+	        for (var i = 0; i < freqs.length - 1; i++) {
+	          this.scale.push(freqs[i] / freqs[0]);
+	        }
+	      }
+	    },
+	    loadScale: {
+	
+	      /* Load a new scale */
+	
+	      value: function loadScale(name) {
+	
+	        /* load the scale */
+	        var freqs = this.scales[name].frequencies;
+	        this.loadScaleFromFrequencies(freqs);
+	      }
+	    },
+	    search: {
+	
+	      /* Search the names of tunings
+	      	 Returns an array of names of tunings */
+	
+	      value: function search(letters) {
+	        var possible = [];
+	        for (var key in this.scales) {
+	          if (key.toLowerCase().indexOf(letters.toLowerCase()) !== -1) {
+	            possible.push(key);
+	          }
+	        }
+	        return possible;
+	      }
+	    },
+	    chord: {
+	
+	      /* Return a collection of notes as an array */
+	
+	      value: function chord(midis) {
+	        var output = [];
+	        for (var i = 0; i < midis.length; i++) {
+	          output.push(this.note(midis[i]));
+	        }
+	        return output;
 	      }
 	    }
 	  });
 	
-	  return Time;
+	  return Tune;
 	})();
 	
-	module.exports = Time;
+	module.exports = Tune;
 
 /***/ },
-/* 41 */
+/* 41 */,
+/* 42 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	
+	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+	
+	//Disable jshint warning concerning trailing regular params
+	/*jshint -W138 */
+	
+	var Radio = (function () {
+	    //if non-existent buttons are switched, they are ignored
+	
+	    function Radio() {
+	        for (var _len = arguments.length, onVals = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	            onVals[_key - 1] = arguments[_key];
+	        }
+	
+	        var length = arguments[0] === undefined ? 3 : arguments[0];
+	
+	        _classCallCheck(this, Radio);
+	
+	        //each optional 'onVals' argument switches on that value in the Radio if it exists
+	        //In the example below, a 3-button radio is created, index 0 is switched on, index 1 is switched on then then attempted again producing an warning, and the final argument produces a warning because the index value does not exist.
+	        //Example:
+	        //`  radio = new Radio(3, 0, 1, 1, 3);
+	        //…  [1,1,0]
+	
+	        if (length < 0) {
+	            length = 1;
+	        }
+	
+	        this.length = length;
+	        this.onVals = onVals;
+	        this.array = new Array(length).fill(0);
+	
+	        if (onVals.length > 0) {
+	            this.on.apply(this, onVals);
+	        }
+	    }
+	
+	    _createClass(Radio, {
+	        select: {
+	            value: function select(value) {
+	                this.array.fill(0);
+	                this.array[value] = 1;
+	                return this.array;
+	            }
+	        },
+	        flip: {
+	            value: function flip() {
+	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+	                    values[_key] = arguments[_key];
+	                }
+	
+	                //flips the specified values. if no value is specified, flips all buttons
+	                var a = this.array;
+	                if (values.length > 0) {
+	                    values.forEach(function (v) {
+	                        if (v > a.length - 1) {
+	                            console.warn("Warning: AnonRadio[" + v + "] does not exist");
+	                        } else {
+	                            a[v] = a[v] ? 0 : 1;
+	                        }
+	                    });
+	                } else {
+	                    a.forEach(function (v, i, arr) {
+	                        arr[i] = v ? 0 : 1;
+	                    });
+	                }
+	                return a;
+	            }
+	        },
+	        on: {
+	            value: function on() {
+	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+	                    values[_key] = arguments[_key];
+	                }
+	
+	                //switch on the specified values. if no value specified, flips on all buttons
+	                var a = this.array;
+	                if (values.length > 0) {
+	                    values.forEach(function (v) {
+	                        if (v > a.length - 1) {
+	                            console.warn("Warning: AnonRadio[" + v + "] exceeds size of object");
+	                        } else {
+	                            if (a[v] === 1) {
+	                                console.warn("Warning: AnonRadio[" + v + "] was already on.");
+	                            }
+	                            a[v] = 1;
+	                        }
+	                    });
+	                } else {
+	                    a.fill(1);
+	                }
+	                return a;
+	            }
+	        },
+	        off: {
+	            value: function off() {
+	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+	                    values[_key] = arguments[_key];
+	                }
+	
+	                //switch off the specified values. if no value specified, flips off all buttons
+	                var a = this.array;
+	                if (values.length > 0) {
+	                    values.forEach(function (v) {
+	                        a[v] = 0;
+	                    });
+	                } else {
+	                    a.fill(0);
+	                }
+	                return a;
+	            }
+	        }
+	    });
+	
+	    return Radio;
+	})();
+	
+	module.exports = Radio;
+
+/***/ },
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var WAAClock = __webpack_require__(42)
+	var WAAClock = __webpack_require__(44)
 	
 	module.exports = WAAClock
 	if (typeof window !== 'undefined') window.WAAClock = WAAClock
 
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var isBrowser = (typeof window !== 'undefined')
@@ -8768,10 +9265,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	WAAClock.prototype._relTime = function(absTime) {
 	  return absTime - this.context.currentTime
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(45)))
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -8957,7 +9454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -8967,12 +9464,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 	
 	var Interval = (function () {
-	  function Interval(rate, func, on, clock) {
+	  function Interval(rate, func, on) {
 	    _classCallCheck(this, Interval);
 	
 	    this.rate = rate;
 	    this.on = on;
-	    this.clock = clock;
+	    this.clock = Nexus.clock; // jshint ignore:line
 	
 	    this.pattern = [1];
 	    this.index = 0;
@@ -8986,10 +9483,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  _createClass(Interval, {
 	    _event: {
-	      value: function _event() {
-	        if (this.pattern[this.index % this.pattern.length]) {
-	          this.event();
-	        }
+	      value: function _event(e) {
+	        //  if (this.pattern[this.index%this.pattern.length]) {
+	        this.event(e);
+	        //  }
 	        this.index++;
 	      }
 	    },
@@ -9002,7 +9499,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    start: {
 	      value: function start() {
 	        this.on = true;
-	        this.interval = this.clock.callbackAtTime(this._event.bind(this), this.clock.context.currentTime).repeat(this.rate / 1000);
+	        this.interval = this.clock.callbackAtTime(this._event.bind(this), this.clock.context.currentTime).repeat(this.rate / 1000).tolerance({ early: 0.1, late: 1 });
 	      }
 	    },
 	    ms: {
@@ -9023,413 +9520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	module.exports = Interval;
 
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-	
-	var scales = _interopRequire(__webpack_require__(46));
-	
-	var Tune = (function () {
-	  function Tune() {
-	    _classCallCheck(this, Tune);
-	
-	    // the scale as ratios
-	    this.scale = [];
-	
-	    // i/o modes
-	    this.mode = {
-	      output: "frequency",
-	      input: "step"
-	    };
-	
-	    // ET major
-	    this.etmajor = [261.62558, 293.664764, 329.627563, 349.228241, 391.995422, 440, 493.883301, 523.25116];
-	
-	    // Root frequency.
-	    this.tonic = 440; // * Math.pow(2,(60-69)/12);
-	
-	    this.scales = scales;
-	
-	    this.loadScale("ji_diatonic");
-	  }
-	
-	  _createClass(Tune, {
-	    tonicize: {
-	
-	      /* Set the tonic frequency */
-	
-	      value: function tonicize(newTonic) {
-	        this.tonic = newTonic;
-	      }
-	    },
-	    note: {
-	
-	      /* Return data in the mode you are in (freq, ratio, or midi) */
-	
-	      value: function note(input, octave) {
-	
-	        var newvalue = undefined;
-	
-	        if (this.mode.output === "frequency") {
-	          newvalue = this.frequency(input, octave);
-	        } else if (this.mode.output === "ratio") {
-	          newvalue = this.ratio(input, octave);
-	        } else if (this.mode.output === "MIDI") {
-	          newvalue = this.MIDI(input, octave);
-	        } else {
-	          newvalue = this.frequency(input, octave);
-	        }
-	
-	        return newvalue;
-	      }
-	    },
-	    frequency: {
-	
-	      /* Return freq data */
-	
-	      value: function frequency(stepIn, octaveIn) {
-	
-	        if (this.mode.input === "midi" || this.mode.input === "MIDI") {
-	          this.stepIn += 60;
-	        }
-	
-	        // what octave is our input
-	        var octave = Math.floor(stepIn / this.scale.length);
-	
-	        if (octaveIn) {
-	          octave += octaveIn;
-	        }
-	
-	        // which scale degree (0 - scale length) is our input
-	        var scaleDegree = stepIn % this.scale.length;
-	
-	        while (scaleDegree < 0) {
-	          scaleDegree += this.scale.length;
-	        }
-	
-	        var freq = this.tonic * this.scale[scaleDegree];
-	
-	        freq = freq * Math.pow(2, octave);
-	
-	        // truncate irrational numbers
-	        freq = Math.floor(freq * 100000000000) / 100000000000;
-	
-	        return freq;
-	      }
-	    },
-	    ratio: {
-	
-	      /* Force return ratio data */
-	
-	      value: function ratio(stepIn, octaveIn) {
-	
-	        if (this.mode.input === "midi" || this.mode.input === "MIDI") {
-	          this.stepIn += 60;
-	        }
-	
-	        // what octave is our input
-	        var octave = Math.floor(stepIn / this.scale.length);
-	
-	        if (octaveIn) {
-	          octave += octaveIn;
-	        }
-	
-	        // which scale degree (0 - scale length) is our input
-	        var scaleDegree = stepIn % this.scale.length;
-	
-	        // what ratio is our input to our key
-	        var ratio = Math.pow(2, octave) * this.scale[scaleDegree];
-	
-	        ratio = Math.floor(ratio * 100000000000) / 100000000000;
-	
-	        return ratio;
-	      }
-	    },
-	    MIDI: {
-	
-	      /* Force return adjusted MIDI data */
-	
-	      value: function MIDI(stepIn, octaveIn) {
-	
-	        var newvalue = this.frequency(stepIn, octaveIn);
-	
-	        var n = 69 + 12 * Math.log(newvalue / 440) / Math.log(2);
-	
-	        n = Math.floor(n * 1000000000) / 1000000000;
-	
-	        return n;
-	      }
-	    },
-	    loadScale: {
-	
-	      /* Load a new scale */
-	
-	      value: function loadScale(name) {
-	
-	        /* load the scale */
-	        var freqs = this.scales[name].frequencies;
-	        this.scale = [];
-	        for (var i = 0; i < freqs.length - 1; i++) {
-	          this.scale.push(freqs[i] / freqs[0]);
-	        }
-	
-	        /* visualize in console
-	        console.log(' ');
-	        console.log('LOADED '+name);
-	        console.log(this.scales[name].description);
-	        console.log(this.scale); */
-	        var vis = [];
-	        for (var i = 0; i < 100; i++) {
-	          vis[i] = " ";
-	        }
-	        for (var i = 0; i < this.scale.length; i++) {
-	          var spot = Math.round(this.scale[i] * 100 - 100);
-	          if (i < 10) {
-	            vis.splice(spot, 1, i + 1);
-	          } else {
-	            vis.splice(spot, 5, i + 1);
-	          }
-	        }
-	        var textvis = "";
-	        for (var i = 0; i < vis.length; i++) {
-	          textvis += vis[i];
-	        }
-	        //console.log(name);
-	        //console.log(textvis);
-	        // ET scale vis
-	        vis = [];
-	        for (var i = 0; i < 100; i++) {
-	          vis[i] = " ";
-	        }
-	        for (var i = 0; i < this.etmajor.length; i++) {
-	          var spot = Math.round(this.etmajor[i] / this.etmajor[0] * 100 - 100);
-	          if (i < 10) {
-	            vis.splice(spot, 1, i + 1);
-	          } else {
-	            vis.splice(spot, 5, i + 1);
-	          }
-	        }
-	        textvis = "";
-	        for (var i = 0; i < vis.length; i++) {
-	          textvis += vis[i];
-	        }
-	        //console.log(textvis);
-	        //console.log('equal-tempered major (reference)');
-	      }
-	    },
-	    search: {
-	
-	      /* Search the names of tunings
-	      	 Returns an array of names of tunings */
-	
-	      value: function search(letters) {
-	        var possible = [];
-	        for (var key in this.scales) {
-	          if (key.toLowerCase().indexOf(letters.toLowerCase()) !== -1) {
-	            possible.push(key);
-	          }
-	        }
-	        return possible;
-	      }
-	    },
-	    chord: {
-	
-	      /* Return a collection of notes as an array */
-	
-	      value: function chord(midis) {
-	        var output = [];
-	        for (var i = 0; i < midis.length; i++) {
-	          output.push(this.note(midis[i]));
-	        }
-	        return output;
-	      }
-	    },
-	    root: {
-	
-	      /* Change the tonic frequency? */
-	
-	      value: function root(newmidi, newfreq) {
-	        this.rootFreq = newfreq;
-	        // not working now ... needs much work.
-	        // setKey is not transposing now, either.
-	      }
-	    }
-	  });
-	
-	  return Tune;
-	})();
-	
-	module.exports = Tune;
-
-/***/ },
-/* 46 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	module.exports = {
-	  ji_12: {
-	    frequencies: [261.6255653006, 279.06726965397, 294.32876096318, 313.95067836072, 327.03195662575, 348.83408706747, 366.27579142084, 392.4383479509, 418.60090448096, 436.04260883433, 470.92601754108, 490.54793493862, 523.2511306012],
-	    description: "Basic JI with 7-limit tritone"
-	  },
-	  ji_12a: {
-	    frequencies: [261.6255653006, 279.06726965397, 294.32876096318, 305.22982618403, 327.03195662575, 348.83408706747, 366.27579142084, 392.4383479509, 418.60090448096, 448.50096908674, 457.84473927605, 490.54793493862, 523.2511306012],
-	    description: "7-limit 12-tone scale"
-	  },
-	  ji_12b: {
-	    frequencies: [261.6255653006, 272.52663052146, 290.69507255622, 305.22982618403, 327.03195662575, 343.38355445704, 366.27579142084, 392.4383479509, 418.60090448096, 448.50096908674, 457.84473927605, 490.54793493862, 523.2511306012],
-	    description: "alternate 7-limit 12-tone scale"
-	  },
-	  ji_12c: {
-	    frequencies: [261.6255653006, 272.52663052146, 294.32876096318, 313.95067836072, 327.03195662575, 348.83408706747, 367.91095120397, 392.4383479509, 418.60090448096, 436.04260883433, 457.84473927605, 490.54793493862, 523.2511306012],
-	    description: "Kurzweil 'Just with natural b7th', is Sauveur Just with 7/4"
-	  },
-	  et: {
-	    frequencies: [261.62558, 293.664764, 329.627563, 349.228241, 391.995422, 440, 493.883301, 523.25116],
-	    description: "Et Major"
-	  },
-	  ji_diatonic: {
-	    frequencies: [261.6255653006, 294.32876096318, 327.03195662575, 348.83408706747, 392.4383479509, 436.04260883433, 490.54793493862],
-	    description: "Basic JI with 7-limit tritone"
-	  }
-	};
-
-/***/ },
-/* 47 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-	
-	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-	
-	//Disable jshint warning concerning trailing regular params
-	/*jshint -W138 */
-	
-	var Radio = (function () {
-	    //if non-existent buttons are switched, they are ignored
-	
-	    function Radio() {
-	        for (var _len = arguments.length, onVals = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	            onVals[_key - 1] = arguments[_key];
-	        }
-	
-	        var length = arguments[0] === undefined ? 3 : arguments[0];
-	
-	        _classCallCheck(this, Radio);
-	
-	        //each optional 'onVals' argument switches on that value in the Radio if it exists
-	        //In the example below, a 3-button radio is created, index 0 is switched on, index 1 is switched on then then attempted again producing an warning, and the final argument produces a warning because the index value does not exist.
-	        //Example:
-	        //`  radio = new Radio(3, 0, 1, 1, 3);
-	        //…  [1,1,0]
-	
-	        if (length < 0) {
-	            length = 1;
-	        }
-	
-	        this.length = length;
-	        this.onVals = onVals;
-	        this.array = new Array(length).fill(0);
-	
-	        if (onVals.length > 0) {
-	            this.on.apply(this, onVals);
-	        }
-	    }
-	
-	    _createClass(Radio, {
-	        select: {
-	            value: function select(value) {
-	                this.array.fill(0);
-	                this.array[value] = 1;
-	                return this.array;
-	            }
-	        },
-	        flip: {
-	            value: function flip() {
-	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
-	                    values[_key] = arguments[_key];
-	                }
-	
-	                //flips the specified values. if no value is specified, flips all buttons
-	                var a = this.array;
-	                if (values.length > 0) {
-	                    values.forEach(function (v) {
-	                        if (v > a.length - 1) {
-	                            console.warn("Warning: AnonRadio[" + v + "] does not exist");
-	                        } else {
-	                            a[v] = a[v] ? 0 : 1;
-	                        }
-	                    });
-	                } else {
-	                    a.forEach(function (v, i, arr) {
-	                        arr[i] = v ? 0 : 1;
-	                    });
-	                }
-	                return a;
-	            }
-	        },
-	        on: {
-	            value: function on() {
-	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
-	                    values[_key] = arguments[_key];
-	                }
-	
-	                //switch on the specified values. if no value specified, flips on all buttons
-	                var a = this.array;
-	                if (values.length > 0) {
-	                    values.forEach(function (v) {
-	                        if (v > a.length - 1) {
-	                            console.warn("Warning: AnonRadio[" + v + "] exceeds size of object");
-	                        } else {
-	                            if (a[v] === 1) {
-	                                console.warn("Warning: AnonRadio[" + v + "] was already on.");
-	                            }
-	                            a[v] = 1;
-	                        }
-	                    });
-	                } else {
-	                    a.fill(1);
-	                }
-	                return a;
-	            }
-	        },
-	        off: {
-	            value: function off() {
-	                for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
-	                    values[_key] = arguments[_key];
-	                }
-	
-	                //switch off the specified values. if no value specified, flips off all buttons
-	                var a = this.array;
-	                if (values.length > 0) {
-	                    values.forEach(function (v) {
-	                        a[v] = 0;
-	                    });
-	                } else {
-	                    a.fill(0);
-	                }
-	                return a;
-	            }
-	        }
-	    });
-	
-	    return Radio;
-	})();
-	
-	module.exports = Radio;
-
 /***/ }
 /******/ ])
 });
 ;
-//# sourceMappingURL=mt.map
+//# sourceMappingURL=NexusUI.map
