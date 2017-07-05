@@ -448,7 +448,7 @@
 
 			<br />
 
-			<button id="mobileStart" style="width:200px;margin:5px 3px;">Press to Initialize Mobile Audio</button>
+			<button id="mobileStart" style="display:none;width:200px;margin:5px 3px;">Press to Initialize Mobile Audio</button>
 
 			<!-- result goes here -->
 
@@ -459,6 +459,10 @@
 			<script>
 
 			mobileStart = document.getElementById('mobileStart')
+
+			if (/Mobi/.test(navigator.userAgent)) {
+			    mobileStart.style.display = "block";
+			}
 
 			mobileStart.addEventListener('click',function() {
 				var osc = Nexus.context.createOscillator();
