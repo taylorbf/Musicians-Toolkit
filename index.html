@@ -451,8 +451,24 @@
 			<div id="power" style="width:40px;height:17px;margin:15px 0px;"></div>
 			<div id="echo" style="width:200px;height:20px;margin:5px 3px;"></div>
 
+			<button id="mobileStart" style="width:200px;height:20px;margin:5px 3px;">Start Mobile</button>
+
 
 			<script>
+
+			mobileStart = document.getElementById('mobileStart')
+
+			mobileStart.addEventListener('click',function() {
+				var osc = Nexus.context.createOscillator();
+				osc.connect(Nexus.context.destination);
+				osc.start(0);
+				osc.stop(1);
+        Nexus.clock.start();
+				beat.start();
+				rack1.demo4.start();
+			})
+
+			Nexus.context = Tone.context
 
 			// Create interfaces
 			var power = new Nexus.Toggle("#power");
@@ -485,6 +501,7 @@
 			// Create a repeating pulse
 			// Change notes on each beat
 			var beat = new Nexus.Interval(100,function(e) {
+				console.log("beat");
 				synth.frequency.value = Nexus.note( sequence.next(), -1 );
 			});
 
