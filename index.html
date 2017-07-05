@@ -284,6 +284,8 @@
 
 			<script>
 
+			Nexus.context = Tone.context;
+
 			var rack1 = new Nexus.Rack("demorack")
 			rack1.demo3.link(rack1.demo2)
 			rack1.demosl1.value = 0.7
@@ -446,12 +448,12 @@
 
 			<br />
 
+			<button id="mobileStart" style="width:200px;margin:5px 3px;">Press to Initialize Mobile Audio</button>
+
 			<!-- result goes here -->
 
 			<div id="power" style="width:40px;height:17px;margin:15px 0px;"></div>
 			<div id="echo" style="width:200px;height:20px;margin:5px 3px;"></div>
-
-			<button id="mobileStart" style="width:200px;height:20px;margin:5px 3px;">Start Mobile</button>
 
 
 			<script>
@@ -462,20 +464,16 @@
 				var osc = Nexus.context.createOscillator();
 				osc.connect(Nexus.context.destination);
 				osc.start(0);
-				osc.stop(1);
+				osc.stop(0.1);
         Nexus.clock.start();
-				beat.start();
-				rack1.demo4.start();
 			})
-
-			Nexus.context = Tone.context
 
 			// Create interfaces
 			var power = new Nexus.Toggle("#power");
 			var delay = new Nexus.Slider("#echo");
 
 			// Create a sound source using Tone.js
-			var synth = new Tone.Oscillator(0,"triangle").start();
+			var synth = new Tone.Oscillator(0,"sine").start();
 			var volume = new Tone.Volume(-Infinity);
 			var delayGen = new Tone.FeedbackDelay(0.2,0.7);
 			synth.chain( delayGen, volume, Tone.Master );
@@ -501,7 +499,6 @@
 			// Create a repeating pulse
 			// Change notes on each beat
 			var beat = new Nexus.Interval(100,function(e) {
-				console.log("beat");
 				synth.frequency.value = Nexus.note( sequence.next(), -1 );
 			});
 
@@ -516,7 +513,7 @@
 			HTML
 
 			<pre class="codedisplay language-html"><code>&lt;div&gt; id="power"&gt;&lt;div&gt;
-&lt;div&gt; id="timbre"&gt;&lt;div&gt;</code></pre>
+&lt;div&gt; id="echo"&gt;&lt;div&gt;</code></pre>
 
 			<br /><br />
 			JS
