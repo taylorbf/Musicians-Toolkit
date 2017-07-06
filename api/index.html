@@ -95,7 +95,7 @@
 
   <div id="tutorial" class="tutorial">
 
-    <div id="target"></div>
+    <div id="target">Page did not load correctly. Try refreshing.</div>
 
     <script id="template" type="x-tmpl-mustache">
     <h2>{{ name }}</h2>
@@ -1505,7 +1505,6 @@ drunk.value = 500   // jumps to this value
   var Unformatted = {}
   var API = {}
   var Helpers = []
-  Nexus.context.close();
   Nexus.context = Tone.context;
 
 
@@ -1584,7 +1583,7 @@ drunk.value = 500   // jumps to this value
       //get inherited members
       if (unformatted.augments) {
         for (var i=0; i<unformatted.augments.length;i++) {
-          let name = unformatted.augments[i].name
+          var name = unformatted.augments[i].name
           if (name != "EventEmitter") {
             members = members.concat(Unformatted[name].members.instance)
             if (Unformatted[name].augments) {
@@ -1690,6 +1689,7 @@ drunk.value = 500   // jumps to this value
       API[key] = entry
     }
 
+  //  document.body.style.backgroundColor = "red"
 
     //load hash
     if(window.location.hash) {
@@ -1847,10 +1847,14 @@ drunk.value = 500   // jumps to this value
     } else if (LoadLinks.Helper.indexOf(name)>=0) {
       helper(name);
     }
+    window.scrollTo(0,0);
+    document.getElementById("target").scrollTop = 0
   }
 
   var menuOpen = false;
   function toggleSidebar(on) {
+    window.scrollTo(0,0);
+    $("#sidebar")[0].scrollTop = 0;
     if (on || on==false) {
       menuOpen = !on;
     }
@@ -1858,12 +1862,23 @@ drunk.value = 500   // jumps to this value
       $("#sidebar").removeClass("menuOpen")
       $("#sidebar").addClass("menuClosed")
       menuOpen = false;
+      document.getElementById("target").style.height = "auto";
+      document.getElementById("target").style.overflow = "auto";
     } else {
       $("#sidebar").removeClass("menuClosed")
       $("#sidebar").addClass("menuOpen")
       menuOpen = true;
+      document.getElementById("target").style.height = "0px";
+      document.getElementById("target").style.overflow = "hidden";
     }
   }
+
+
+
+    load("intro");
+    window.scrollTo(0,0);
+    document.getElementById("target").scrollTop = 0
+
 </script>
 <style>
 
@@ -2093,6 +2108,10 @@ drunk.value = 500   // jumps to this value
     }
     .menuOpen {
       display:block;
+    /*  position:absolute !important;
+      top:0px;
+      height:3000px !important;
+      background-color:red !important; */
     }
   }
 
