@@ -11,12 +11,11 @@
 <body style="margin:0;padding;0">
 
 
-
-  <div style="font-size:25px;">
+  <div style="font-size:25px;margin:10px;">
     Testing Sandbox
   </div>
 
-  <span id="button"></span>
+  <div id="target"></div>
 
 
 </body>
@@ -24,7 +23,7 @@
 body {
   font-family:helvetica;
 }
-[nexus-ui], div {
+[nexus-ui] {
   margin:10px;
 }
 </style>
@@ -32,9 +31,12 @@ body {
 
   Nexus.context = Tone.context;
 
-  toggle = new Nexus.Button('#button', {
-    state: true
-  });
+  var thing = new Nexus.Pan('#target')
+  
+  thing.on('change',function(e) {
+    console.log(e);
+  })
+
 
 
 

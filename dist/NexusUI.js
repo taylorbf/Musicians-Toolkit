@@ -933,8 +933,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (settings.size && Array.isArray(settings.size) && settings.snapWithParent) {
 	          this.width = settings.size[0];
 	          this.height = settings.size[1];
-	          this.parent.style.width = this.width;
-	          this.parent.style.height = this.height;
+	          this.parent.style.width = this.width + "px";
+	          this.parent.style.height = this.height + "px";
 	        } else if (settings.snapWithParent) {
 	          this.width = parseFloat(this.parent.style.width);
 	          this.height = parseFloat(this.parent.style.height);
@@ -1823,9 +1823,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        switch (this.direction) {
 	          case "radial":
 	            var position = math.toPolar(current.x - this.boundary.center.x, current.y - this.boundary.center.y);
-	            // instead of using modulo, should simply adjust the lower values (0 - 0.5PI) to be higher (2PI - 2.5PI), then clip the numbers between 0.5 pi and 2.5 pi.
 	            position = position.angle / (Math.PI * 2);
-	            position = (position - 0.25) % 1;
+	            position = (position - 0.25 + 1) % 1;
 	            return position;
 	          case "vertical":
 	            return math.scale(current.y, this.boundary.min.y, this.boundary.max.y, 0, 1);
@@ -2004,13 +2003,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	* @example
 	* var slider = new Nexus.Slider('#target',{
 	*     'size': [120,20],
-	*     'orientation': 'vertical',  // 'vertical' or 'horizontal'
 	*     'mode': 'relative',  // 'relative' or 'absolute'
 	*     'min': 0,
 	*     'max': 1,
 	*     'step': 0,
-	*     'value': 0,
-	*     'hasKnob': true
+	*     'value': 0
 	* })
 	*
 	* @output
@@ -2034,20 +2031,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var defaults = {
 	      size: [120, 20],
-	      orientation: "vertical", // 'vertical' or 'horizontal'
 	      mode: "relative", // 'relative' or 'absolute'
 	      min: 0,
 	      max: 1,
 	      step: 0,
-	      value: 0,
-	      hasKnob: true
+	      value: 0
 	    };
 	
 	    _get(Object.getPrototypeOf(Slider.prototype), "constructor", this).call(this, arguments, options, defaults);
 	
-	    this.orientation = this.settings.orientation;
-	
-	    this.hasKnob = this.settings.hasKnob;
+	    this.orientation = "vertical"; // This will change automatically to 'horizontal'if the interface is wider than it is tall.
 	
 	    this._value = new Step(this.settings.min, this.settings.max, this.settings.step, this.settings.value);
 	
@@ -2153,10 +2146,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.knob.setAttribute("cy", y);
 	        }
 	        this.knob.setAttribute("r", this.knobData.r);
-	
-	        if (!this.hasKnob) {
-	          this.knob.setAttribute("fill", "transparent");
-	        }
 	      }
 	    },
 	    colorInterface: {
@@ -2888,9 +2877,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	* var textbutton = new Nexus.TextButton('#target')
 	*
 	* @example
-	* var dial = new Nexus.TextButton('#target',{
+	* var textbutton = new Nexus.TextButton('#target',{
 	*     'size': [150,50],
-	*     'value': 0,
+	*     'state': true,
 	*     'text': 'Play',
 	*     'alternate': false
 	* })
@@ -2915,7 +2904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var defaults = {
 	      size: [150, 50],
-	      value: 0,
+	      state: true,
 	      text: "Play",
 	      alternate: false
 	    };
@@ -2927,6 +2916,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this.init();
 	    this.render();
+	
+	    this.state = this.settings.state;
 	  }
 	
 	  _inherits(TextButton, _ButtonTemplate);
@@ -3097,7 +3088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this.buttons = [];
 	    this._numberOfButtons = this.settings.numberOfButtons;
-	    this.active = -1;
+	    this.active = this.settings.active;
 	
 	    this.init();
 	    this.render();
@@ -3993,22 +3984,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	                angle = 0;
 	              }
 	            }
-	          } else {
+	          } /* else {
 	            if (this.previousAngle !== false && Math.abs(this.previousAngle - angle) > 2) {
 	              if (this.previousAngle > 3) {
-	                angle = Math.PI * 2;
+	                angle = Math.PI*2;
 	              } else {
 	                angle = 0;
 	              }
 	            }
-	          }
+	            } */
 	          this.previousAngle = angle;
-	          //    this.position.value %= Math.PI*2;
 	
-	          this.value = this._value.updateNormal(angle / (Math.PI * 2));
-	          //if (this._value.changed) {
+	          var realValue = angle / (Math.PI * 2);
+	
+	          this.value = this._value.updateNormal(realValue);
+	
+	          if (this.mode === "relative") {
+	            this.position.value = realValue;
+	          }
+	
 	          this.emit("change", this._value.value);
-	          //}
+	
 	          this.render();
 	        }
 	      }
@@ -4290,7 +4286,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	*
 	* @example
 	* var piano = new Nexus.Piano('#target',{
-	*     'size': [500,150],
+	*     'size': [500,125],
 	*     'mode': 'button',  // 'button', 'toggle', or 'impulse'
 	*     'lowNote': 24,
 	*     'highNote': 60
@@ -4351,7 +4347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function buildFrame() {
 	        this.element = document.createElement("div");
 	        this.element.style.position = "relative";
-	        this.element.style.borderRadius = "4px";
+	        this.element.style.borderRadius = "0px";
 	        this.element.style.display = "block";
 	        this.element.style.width = "100%";
 	        this.element.style.height = "100%";
@@ -4440,14 +4436,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    colorInterface: {
 	      value: function colorInterface() {
 	
+	        // Piano keys don't actually have a stroke border
+	        // They have space between them, which shows the Piano bg color
 	        this.element.style.backgroundColor = this.colors.mediumLight;
 	
 	        for (var i = 0; i < this.keys.length; i++) {
 	          this.keys[i].colors = {
 	            w: this.colors.light,
 	            b: this.colors.dark,
-	            accent: this.colors.accent
+	            accent: this.colors.accent,
+	            border: this.colors.mediumLight
 	          };
+	          this.keys[i].colorInterface();
 	          this.keys[i].render();
 	        }
 	      }
@@ -4793,15 +4793,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.interval = new Nexus.Interval(200, function () {}, false); // jshint ignore:line
 	
 	    /**
-	    A Matrix model containing methods for manipulating the sequencer's array of values.
-	    @type {Matrix}
+	    A Matrix model containing methods for manipulating the sequencer's array of values. To learn how to manipulate the matrix, read about the matrix model.
+	    @type {matrix}
 	    */
 	    this.matrix = new MatrixModel(this.settings.rows, this.settings.columns);
 	    this.matrix.ui = this;
 	
 	    /**
 	    A Counter model which the sequencer steps through. For example, you could use this model to step through the sequencer in reverse, randomly, or in a drunk walk.
-	    @type {Counter}
+	    @type {counter}
 	    */
 	    this.stepper = new CounterModel(0, this.columns);
 	
@@ -7525,6 +7525,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.nodes.push(node);
 	        });
 	
+	        this.sortPoints();
+	
 	        this.line = svg.create("polyline");
 	        this.line.setAttribute("stroke-width", 2);
 	        this.line.setAttribute("fill", "none");
@@ -8593,6 +8595,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        this.meta.colors[type] = color;
 	        this.colorInterface();
+	      }
+	    },
+	    empty: {
+	      value: function empty() {
+	        for (var key in this) {
+	          if (this[key].destroy) {
+	            this[key].destroy();
+	          }
+	        }
 	      }
 	    }
 	  });

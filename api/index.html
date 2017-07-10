@@ -2,9 +2,10 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>  | Documentation</title>
+  <title>NexusUI API</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
-<!--  <link href="https://fonts.googleapis.com/css?family=Muli:400,700" rel="stylesheet"> -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css?family=Muli:400,700" rel="stylesheet">
   <script src="js/jquery.js"></script>
   <link rel='stylesheet' href='prism/prism.css' />
   <script src="prism/prism.js"></script>
@@ -62,7 +63,7 @@
 
       <h3>Visualization</h3>
       <a href="#Meter">Meter</a><br />
-      <a href="#Oscilloscope">Pscilloscope</a><br />
+      <a href="#Oscilloscope">Oscilloscope</a><br />
       <a href="#Spectrogram">Spectragram</a><br />
 
 
@@ -1724,12 +1725,11 @@ drunk.value = 500   // jumps to this value
     Prism.highlightAll();
 
     if (instrument) {
-      if (instrument[""])
-        try {
-          instrument[""].destroy();
-        } catch(e) {
-          console.log(e);
-        }
+      try {
+        instrument.empty()
+      } catch(e) {
+        console.log(e);
+      }
     }
     instrument = new Nexus.Rack("demo");
 
@@ -1739,14 +1739,14 @@ drunk.value = 500   // jumps to this value
 
     if (name=="Waveform") {
       player.load("media/D-sharp.mp3",function() {
-        instrument[""].load(player.buffer._buffer)
+        instrument["Waveform1"].load(player.buffer._buffer)
       })
     } else if (["Meter","Oscilloscope","Spectrogram"].indexOf(name)>-1) {
       player.load("media/D-sharp.mp3",function() {
         player.loopStart = 0;
         player.loopEnd = 3;
         player.loop = true;
-        instrument[""].connect(player,2);
+        instrument[name+"1"].connect(player,2);
         player.start();
       })
     }
@@ -1765,12 +1765,11 @@ drunk.value = 500   // jumps to this value
 
 
       if (instrument) {
-        if (instrument[""])
-          try {
-            instrument[""].destroy();
-          } catch(e) {
-            console.log(e);
-          }
+        try {
+          instrument.empty();
+        } catch(e) {
+          console.log(e);
+        }
       }
 
       if (name=="intro") {
@@ -1789,12 +1788,11 @@ drunk.value = 500   // jumps to this value
 
 
     if (instrument) {
-      if (instrument[""])
-        try {
-          instrument[""].destroy();
-        } catch(e) {
-          console.log(e);
-        }
+      try {
+        instrument.empty();
+      } catch(e) {
+        console.log(e);
+      }
     }
 
     var entry = {"helpers": Helpers}
@@ -1819,8 +1817,8 @@ drunk.value = 500   // jumps to this value
   }
 
   var TypeLinks = [
-    "Matrix",
-    "Counter",
+    "matrix",
+    "counter",
     "interval",
   ]
 
